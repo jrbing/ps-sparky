@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
 # ps-sparky bash preferences file
-# DO NOT MODIFY:  update .localrc if necessary
+# --DO NOT MODIFY--
+# This file is overwritten whenever an update is applied
+# Please update the ~/.localrc file if necessary
 
-#################
-# Initial Setup #
-#################
+###############
+# Initial Setup
+###############
 export PS1='\e[0;34m[${PS_ENV:-"NOENV"} | \u@\h \W]\$ \e[m' # Set the prompt
 export SPHOME="$HOME/.ps-sparky"                            # Set the SPHOME
 export PATH=$PATH:$SPHOME/bin
 
-#########
-# Fixes #
-#########
+#######
+# Fixes
+#######
 export PMID=$(hostname) # Export the PMID in order to resolve an issue that Tuxedo has with long hostnames
 
-###########
-# Aliases #
-###########
+#########
+# Aliases
+#########
 alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executable
 
 ######################
