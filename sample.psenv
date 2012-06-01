@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Sample .psenv file
+
+export PS_ENV="<change_me>"  # Set this to the name of your environment settings
+
+###############################################
+# Change the following to the appropriate paths
+###############################################
+
+# ----- PeopleTools -----
+export PS_HOME="/path/to/PS_HOME"
+export PS_CFG_HOME="/path/to/PS_CFG_HOME"
+export PS_APP_HOME="/path/to/PS_APP_HOME"
+
+# ----- Required 3rd Party Tools -----
+export TUXDIR="/path/to/tuxedo/installation"
+export COBDIR="/path/to/cobol/installation"
+export JAVA_HOME="/path/to/java/installation"   # Required for WebLogic
+
+##########
+# Optional
+##########
+
+# ---------- Oracle Database ----------
+# - Uncomment and modify the following
+# - for use with Oracle
+#export ORACLE_HOME="/path/to/ORACLE_HOME"
+#export ORACLE_BASE="/path/to/ORACLE_BASE"
+
+# ----- Oracle Enterprise Manager -----
+# - Uncomment and modify the following
+# - for use with Oracle Enterprise Manager
+#export AGENT_HOME="/path/to/AGENT_HOME"
+
+# ----- ps-simon -----
+# - https://github.com/jrbing/ps-simon
+# - Uncomment and modify the following
+# - for use with ps-simon
+#export PS_APP_DOMAIN="hrdmo"
+#export PS_PRCS_DOMAIN="hrdmo"
+#export PS_PIA_DOMAIN="peoplesoft"
+
+##########################################
+# Custom PATH and LD_LIBRARY_PATH settings
+# Add any custom changes to your PATH and
+# LD_LIBRARY_PATH below
+##########################################

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# ps-dotfiles script for sourcing environment variables
+
+PS_ENV_HOME=$HOME/environments
+PSENV_LIBDIR=$SPHOME/lib
+. $PSENV_LIBDIR/libpsenv.sh
+
+# Check for environments
+check_for_environment_dir
+
+# Parse any options passed to the script
+while :
+do
+  case $1 in
+    -h | --help | -\?)
+      # TODO:  add help
+      printf "This is some help\n" >&2
+      exit 0
+      ;;
+    -l | --list)
+      printf "Environment files: \n" >&2
+      for i in "${ENV_FILES[@]}"; do
+        printf "$i\n"
+      done
+      exit 0
+      ;;
+    -v | --verbose)
+      VERBOSE=$((verbose+1))
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      printf "WARN: Unknown option (ignored): $1 \n" >&2
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+ENVIRONMENT=$1                           # Pass in the environment
+
+if [ $(contains_environment "${ENV_FILES[@]}" $ENVIRONMENT) == "y" ]; then
+    printf "Environment file for $1 found\n"
+    environment_reset                        # Reset the impacted environment variables
+    restore_library_path                     # Change the library path to it's previous setting
+    restore_path                             # Change the path to it's previous setting
+    source_env_file $ENVIRONMENT             # Source the environment file
+    source_psconfig                          # Run the psconfig.sh script
+    set_library_path                         # Set the LD_LIBRARY_PATH
+    set_path                                 # Set the PATH
+  else
+    printf "Environment file for $1 not found\n"
+fi
+

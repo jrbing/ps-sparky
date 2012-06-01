@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# ps-sparky custom settings file
+
+############################
+# Place Custom Settings Here
+############################
+export EDITOR=vim             # Change to whatever editor you prefer
+export USER="psoft"           # Change to the PeopleSoft service account username
+export PATH=$PATH             # Add any custom changes to your PATH here
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH  # Add any custom changes to your LD_LIBRARY_PATH here
+
+# --------------------------------------------- #
+################# DO NOT MODIFY #################
+export ORIGINAL_PATH=$PATH
+export ORIGINAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+# --------------------------------------------- #
+
+################################
+# Default PeopleSoft Environment
+################################
+# Uncomment and update the following line if you'd like to source a .psenv file
+# on login
+# . psenv <environment_file_name>

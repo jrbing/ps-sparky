@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+#Title         :psadm
+#Description   :Utility script for working with PeopleSoft under Unix
+#Author        :JR Bing
+#==============================================================================
+
+###############################
+# Source the function libraries
+###############################
+
+BASEDIR=$(dirname $0)
+. $BASEDIR/../lib/libpsadm.sh
+. $BASEDIR/../lib/libpsadmin.sh
+
+############
+# Validation
+############
+
+checkPsftVars
+checkPsenvVars
+
+#############################
+# Parse the command arguments
+#############################
+
+case $1 in
+
+  (help)
+    printHelp
+  ;;
+
+  (status)
+    case $2 in
+      (app)
+        showAppserverProcesses
+        pause
+        showAppserverServerStatus
+        pause
+        showAppserverClientStatus
+        pause
+        showAppserverQueueStatus
+      ;;
+      (web)
+        showWebserverStatus
+      ;;
+      (prcs)
+        showProcessSchedulerStatus
+      ;;
+      (agent)
+        showEMAgentStatus
+      ;;
+      (all)
+        showAppserverProcesses
+        pause
+        showAppserverServerStatus
+        pause
+        showAppserverClientStatus
+        pause
+        showAppserverQueueStatus
+        pause
+        showProcessSchedulerStatus
+        pause
+        showWebserverStatus
+      ;;
+      (*)
+        printStatusHelp
+      ;;
+    esac
+  ;;
+
+  (start)
+    case $2 in
+      (app)
+        startAppserver
+      ;;
+      (web)
+        startWebserver
+      ;;
+      (prcs)
+        startProcessScheduler
+      ;;
+      (agent)
+        startEMAgent
+      ;;
+      (all)
+        startAppserver
+        startProcessScheduler
+        startWebserver
+      ;;
+      (*)
+        printStartHelp
+      ;;
+    esac
+  ;;
+
+  (stop)
+    case $2 in
+      (app)
+        stopAppserver
+      ;;
+      (web)
+        stopWebserver
+      ;;
+      (prcs)
+        stopProcessScheduler
+      ;;
+      (agent)
+        stopEMAgent
+      ;;
+      (all)
+        stopAppserver
+        stopProcessScheduler
+        stopWebserver
+      ;;
+      (*)
+        printStopHelp
+      ;;
+    esac
+  ;;
+
+  (bounce)
+    case $2 in
+      (app)
+        bounceAppserver
+      ;;
+      (web)
+        bounceWebserver
+      ;;
+      (prcs)
+        bounceProcessScheduler
+      ;;
+      (agent)
+        bounceEMAgent
+      ;;
+      (hub)
+        bounceEMHub
+      ;;
+      (all)
+        stopAppserver
+        stopProcessScheduler
+        stopWebserver
+        startAppserver
+        startProcessScheduler
+        startWebserver
+      ;;
+      (*)
+        printBounceHelp
+      ;;
+    esac
+  ;;
+
+  (show)
+    case $2 in
+      (vars)
+        showPsftVars
+      ;;
+      (*)
+        printShowHelp
+      ;;
+    esac
+  ;;
+
+  (watch)
+    case $2 in
+      (app)
+        case $3 in
+          (proc)
+            watchAppserverProcesses
+          ;;
+          (srvr)
+            watchAppserverServerStatus
+          ;;
+          (client)
+            watchAppserverClientStatus
+          ;;
+          (queue)
+            watchAppserverQueueStatus
+          ;;
+          (*)
+            printWatchAppHelp
+          ;;
+        esac
+      ;;
+      (prcs)
+        watchProcessSchedulerStatus
+      ;;
+      (*)
+        printWatchHelp
+      ;;
+    esac
+  ;;
+
+  (*)
+    printHelp
+  ;;
+
+esac
