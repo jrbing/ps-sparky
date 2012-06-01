@@ -2,6 +2,7 @@
 # Sample .psenv file
 
 export PS_ENV="<change_me>"  # Set this to the name of your environment settings
+                             # This is what will be shown in your prompt
 
 ###############################################
 # Change the following to the appropriate paths
@@ -11,11 +12,18 @@ export PS_ENV="<change_me>"  # Set this to the name of your environment settings
 export PS_HOME="/path/to/PS_HOME"
 export PS_CFG_HOME="/path/to/PS_CFG_HOME"
 export PS_APP_HOME="/path/to/PS_APP_HOME"
-
-# ----- Required 3rd Party Tools -----
 export TUXDIR="/path/to/tuxedo/installation"
-export COBDIR="/path/to/cobol/installation"
-export JAVA_HOME="/path/to/java/installation"   # Required for WebLogic
+
+# ----- 3rd Party Tools -----
+#export JAVA_HOME="/path/to/java/installation"   # Required if using Weblogic
+#export COBDIR="/path/to/cobol/installation"     # Required if using COBOL
+
+# ----- PSADM -----
+# - Change the following to
+# - use with the psadm script
+export PS_APP_DOMAIN="hrdmo"
+export PS_PRCS_DOMAIN="hrdmo"
+export PS_PIA_DOMAIN="peoplesoft"
 
 ##########
 # Optional
@@ -31,14 +39,6 @@ export JAVA_HOME="/path/to/java/installation"   # Required for WebLogic
 # - Uncomment and modify the following
 # - for use with Oracle Enterprise Manager
 #export AGENT_HOME="/path/to/AGENT_HOME"
-
-# ----- ps-simon -----
-# - https://github.com/jrbing/ps-simon
-# - Uncomment and modify the following
-# - for use with ps-simon
-#export PS_APP_DOMAIN="hrdmo"
-#export PS_PRCS_DOMAIN="hrdmo"
-#export PS_PIA_DOMAIN="peoplesoft"
 
 ##########################################
 # Custom PATH and LD_LIBRARY_PATH settings
