@@ -76,7 +76,7 @@ set_path () {
   export PATH=$PATH:.
   export PATH=$TUXDIR/bin:$PATH
   export PATH=$COBDIR/bin:$PATH
-  export PATH=$AGENT_HOME/bin:$PATH
   export PATH=$ORACLE_HOME/bin:$PATH
+  export PATH=$AGENT_HOME/bin:$PATH
 }
 
