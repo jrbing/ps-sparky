@@ -20,15 +20,16 @@ export PMID=$(hostname) # Export the PMID in order to resolve an issue that Tuxe
 # Aliases
 #########
 alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executable
+alias update-sparky='($HOME/.ps-sparky/util/update.sh)'   # Update sparky from github
 
 ######################
 # OS Specific Settings
 ######################
 case $(uname) in
-  (Linux)
+  (Linux*)
     # TBD: Linux specific settings
   ;;
-  (SunOS)
+  (SunOS*)
     # TBD: Solaris specific settings
   ;;
   (Cygwin*)
