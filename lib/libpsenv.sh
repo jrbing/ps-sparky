@@ -30,7 +30,7 @@ check_for_environment_dir () {
     log "Loading environments..."
     load_environment_list
   else
-    mkdir $PS_ENV_HOME && cp $LIBDIR/sample.psenv $PS_ENV_HOME/
+    mkdir $PS_ENV_HOME && cp $SPHOME/sample.psenv $PS_ENV_HOME/
     log "The $PS_ENV_HOME directory has been created and a sample file has been copied.  Please use the sample file provided to configure you environment settings"
     exit 1
   fi
