@@ -1,7 +1,23 @@
 ps-sparky
 ===========
 
-_Work in progress_
+_CAUTION:  this is a work in process, and not yet intended to be used_
+
+Installation
+------------
+
+Login as the PeopleSoft installation account user (ex: psoft) and run the following from the terminal. 
+
+    curl -kL http://git.io/install-ps-sparky | bash
+
+The script will attempt to do the following - 
+
+* download preference files and scripts into the ~/.ps-sparky directory
+* create symlinks to the profile, bash_profile, and bashrc files
+* copy the sample localrc file to ~/.localrc
+* create
+
+
 
 License
 -------
