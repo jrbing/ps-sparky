@@ -7,7 +7,7 @@ used in a production environment_
 About
 -----
 Sparky is a set of preferences and scripts that are intended to help
-with the management of PeopleSoft servers under Unix/Linux.
+with the setup and management of PeopleSoft servers under Unix/Linux.
 
 Features
 --------
@@ -23,7 +23,7 @@ Sparky comes with the following default settings:
 Additionally, Sparky comes with a few helper scripts that are automatically added to the PATH.
 
 - **psenv** → Script to toggle PeopleSoft environment variable settings.  This is extremely useful if you're working with multiple PeopleSoft environments on a single machine. 
-- **psadm** → Wrapper script for the psadmin executable, as well as  
+- **psadm** → Wrapper script for the psadmin and various other scripts in the PeopleSoft home
 
 
 Requirements
@@ -32,6 +32,7 @@ To work properly, Sparky requires the following:
 
 - Unix or Linux environment →  Sparky is currently developed and tested under Solaris 10 and RHEL 5
 - bash →  The default shell for the PeopleSoft service account user needs to be set to bash
+- curl →  Necessary for installing and updating
 
 
 Installation
