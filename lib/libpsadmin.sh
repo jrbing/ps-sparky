@@ -3,13 +3,21 @@
 
 PSADMIN_PATH=$PS_HOME/appserv
 
-#######
-# Admin
-#######
+#########
+# Utility
+#########
 
 psadminEXE () {
   cd $PS_HOME/appserv
   psadmin $@
+}
+
+checkVar () {
+ # Check to see if the appropriate environment variables are set
+    if [[ `printenv ${1}` = '' ]]; then
+      printf "[PSENV]: ${1} is not set.  You'll need to set this in your environment file\n"
+      exit 1
+    fi
 }
 
 ########
@@ -42,73 +50,90 @@ log () {
 # Appserver
 ###########
 
+#Boots an application server domain
 startAppserver () {
-  #Boots an application server domain
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c parallelboot -d $PS_APP_DOMAIN
 }
 
+#Reloads the domain configuration for the domain.
 configAppserver () {
-  #Reloads the domain configuration for the domain.
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c configure -d $PS_APP_DOMAIN
 }
 
+#Shuts down the application server domain, by using a normal shutdown
+#method. In a normal shutdown, the domain waits for users to complete
+#their tasks and turns away new requests before terminating all of the
+#processes in the domain.
 stopAppserver () {
-  #Shuts down the application server domain, by using a normal shutdown method.
-  #In a normal shutdown, the domain waits for users to complete their tasks and turns away new requests before terminating all of the processes in the domain.
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c shutdown -d $PS_APP_DOMAIN
 }
 
+#Shuts down the application server domain by using a forced shutdown method.
+#In a forced shutdown, the domain immediately terminates all of the processes
+#in the domain.
 killAppserver () {
-  #Shuts down the application server domain by using a forced shutdown method.
-  #In a forced shutdown, the domain immediately terminates all of the processes in the domain.
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c shutdown! -d $PS_APP_DOMAIN
 }
 
+#Displays the processes that have been booted for the PSDMO domain. This
+#includes the system process ID for each process.
 showAppserverProcesses () {
-  #Displays the processes that have been booted for the PSDMO domain. This includes the system process ID for each process.
+  checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Processes"
   psadminEXE -c pslist -d $PS_APP_DOMAIN
   printBlankLine
 }
 
+#Displays the Tuxedo processes and PeopleSoft server processes that are
+#currently running in the PSDMO application server domain.
 showAppserverServerStatus () {
-  #Displays the Tuxedo processes and PeopleSoft server processes that are currently running in the PSDMO application server domain.
+  checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Status"
   psadminEXE -c sstatus -d $PS_APP_DOMAIN
   printBlankLine
 }
 
+#Displays the clients connected to the application server domain.
 showAppserverClientStatus () {
-  #Displays the currently connected users in the application server domain.
+  checkVar "PS_APP_DOMAIN"
   printBanner "Client Status"
   psadminEXE -c cstatus -d $PS_APP_DOMAIN
   printBlankLine
 }
 
+#Displays status information about the individual queues for each
+#server process in the application server domain.
 showAppserverQueueStatus () {
-  #Displays status information about the individual queues for each server process in the application server domain.
+  checkVar "PS_APP_DOMAIN"
   printBanner "Queue Status"
   psadminEXE -c qstatus -d $PS_APP_DOMAIN
   printBlankLine
 }
 
+#Preloads the server cache for the domain.
 preloadAppserverCache () {
-  #Preloads the server cache for the domain.
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c preload -d $PS_APP_DOMAIN
 }
 
+#Cleans the IPC resources for the domain.
 flushAppserverIPC () {
-  #Cleans the IPC resources for the domain.
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c cleanipc -d $PS_APP_DOMAIN
 }
 
+#Purges the cache for the domain.
 purgeAppserverCache () {
-  #Purges the cache for the domain.
+  checkVar "PS_APP_DOMAIN"
   psadminEXE -c purge -d $PS_APP_DOMAIN
 }
 
+#Stops, purges, reconfigures, and restarts the application server
 bounceAppserver () {
-  #Stops, purges, reconfigures, and restarts the application server
   stopAppserver
   flushAppserverIPC
   purgeAppserverCache
@@ -116,8 +141,8 @@ bounceAppserver () {
   startAppserver
 }
 
+#Loops through the appserver process status until canceled
 watchAppserverProcesses () {
-  #Loops through the appserver process status until canceled
   while true
   do
     clear
@@ -128,8 +153,8 @@ watchAppserverProcesses () {
   done
 }
 
+#Loops through the appserver process status until canceled
 watchAppserverServerStatus () {
-  #Loops through the appserver process status until canceled
   while true
   do
     clear
@@ -140,8 +165,8 @@ watchAppserverServerStatus () {
   done
 }
 
+#Loops through the appserver queue status until canceled
 watchAppserverClientStatus () {
-  #Loops through the appserver queue status until canceled
   while true
   do
     clear
@@ -152,8 +177,8 @@ watchAppserverClientStatus () {
   done
 }
 
+#Loops through the appserver queue status until canceled
 watchAppserverQueueStatus () {
-  #Loops through the appserver queue status until canceled
   while true
   do
     clear
@@ -168,48 +193,54 @@ watchAppserverQueueStatus () {
 # Process Scheduler
 ###################
 
+#Starts a Process Scheduler
 startProcessScheduler () {
-  #Starts a Process Scheduler
+  checkVar "PS_PRCS_DOMAIN"
   psadminEXE -p start -d $PS_PRCS_DOMAIN
 }
 
+#Stops a Process Scheduler
 stopProcessScheduler () {
-  #Stops a Process Scheduler
+  checkVar "PS_PRCS_DOMAIN"
   psadminEXE -p stop -d $PS_PRCS_DOMAIN
 }
 
+#Kills the domain (similar to forced shutdown)
 killProcessScheduler () {
-  #Kills the domain (similar to forced shutdown)
+  checkVar "PS_PRCS_DOMAIN"
   psadminEXE -p kill -d $PS_PRCS_DOMAIN
 }
 
+#Configures a Process Scheduler
 configProcessScheduler () {
-  #Configures a Process Scheduler
+  checkVar "PS_PRCS_DOMAIN"
   psadminEXE -p configure -d $PS_PRCS_DOMAIN
 }
 
+#Displays the status of a Process Scheduler
 showProcessSchedulerStatus () {
-  #Displays the status of a Process Scheduler
+  checkVar "PS_PRCS_DOMAIN"
   printBanner "Process Scheduler Status"
   psadminEXE -p status -d $PS_PRCS_DOMAIN
   printBlankLine
 }
 
+#Cleans the IPC resources for specified domain
 flushProcessSchedulerIPC () {
-  #Cleans the IPC resources for specified domain
+  checkVar "PS_PRCS_DOMAIN"
   psadminEXE -p cleanipc -d $PS_PRCS_DOMAIN
 }
 
+#Stops, purges, reconfigures, and restarts the process scheduler server
 bounceProcessScheduler () {
-  #Stops, purges, reconfigures, and restarts the process scheduler server
   stopProcessScheduler
   flushProcessSchedulerIPC
   configProcessScheduler
   startProcessScheduler
 }
 
+#Loops through the process scheduler status until canceled
 watchProcessSchedulerStatus () {
-  #Loops through the process scheduler status until canceled
   while true
   do
     clear
@@ -223,8 +254,9 @@ watchProcessSchedulerStatus () {
 # Webserver
 ###########
 
+# Starts the webserver process
 startWebserver () {
-  # Starts the webserver process
+  checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh ]; then
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh
   else
@@ -233,8 +265,9 @@ startWebserver () {
   fi
 }
 
+# Stop the webserver process
 stopWebserver () {
-  # Stop the webserver process
+  checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh ]; then
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh
   else
@@ -245,11 +278,13 @@ stopWebserver () {
 
 #killWebserver () {
   # TODO
+  #checkVar "PS_PIA_DOMAIN"
   # $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA.pid
 #}
 
+# Shows the status of the webserver
 showWebserverStatus () {
-  # TODO:  fix to work with 8.49
+  checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/singleserverStatus.sh ]; then
     printBanner "Web Server Status"
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/singleserverStatus.sh
@@ -260,8 +295,9 @@ showWebserverStatus () {
   fi
 }
 
+# Purgest the webserver cache
 purgeWebserverCache () {
-  # Purgest the webserver cache
+  checkVar "PS_PIA_DOMAIN"
   printf "\n"
   printf "Purging Webserver Cache Files\n"
   printf "\n"
@@ -283,13 +319,13 @@ bounceWebserver () {
 # Environment Management Agent
 ##############################
 
+# Start the emagent process and begin tailing the output
 startEMAgent () {
-  # Start the emagent process and begin tailing the output
   $PS_HOME/PSEMAgent/StartAgent.sh && tail -f $PS_HOME/PSEMAgent/envmetadata/logs/emf.log
 }
 
+# Start the emagent process
 stopEMAgent () {
-  # Start the emagent process
   $PS_HOME/PSEMAgent/StopAgent.sh
 }
 
@@ -299,11 +335,13 @@ stopEMAgent () {
   #../jre/bin/java com.peoplesoft.pt.environmentmanagement.agent.Agent shutdown
 #}
 
+# Shows the status of the emagent
 showEMAgentStatus () {
   # TODO
   $PS_HOME/PSEMViewer/GetEnvInfo.sh
 }
 
+# Purges the emagent cache
 purgeEMAgent () {
   # TODO:  cleanup
   printf " \n"
@@ -327,6 +365,7 @@ purgeEMAgent () {
   printf " \n"
 }
 
+# Restarts the emagent
 bounceEMAgent () {
   stopEMAgent
   purgeEMAgent
@@ -337,6 +376,7 @@ bounceEMAgent () {
 # Environment Management Hub
 ############################
 
+# Purges the emhub cache
 purgeEMHub () {
   # TODO:  test
   printf " \n"
@@ -357,6 +397,7 @@ purgeEMHub () {
   printf " \n"
 }
 
+# Restarts the emhub
 bounceEMHub () {
   stopEMAgent
   stopWebserver
