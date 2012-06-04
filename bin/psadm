@@ -17,7 +17,6 @@ BASEDIR=$(dirname $0)
 ############
 
 checkPsftVars
-checkPsenvVars
 
 #############################
 # Parse the command arguments
