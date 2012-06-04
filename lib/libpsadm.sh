@@ -7,8 +7,8 @@ ENV_VARS=( HOME PS_HOME PS_CFG_HOME PS_APP_HOME TUXDIR )
 # Help Documentation
 ####################
 
-printHelp () {
 # Prints the help documentation
+printHelp () {
 cat <<- EOF
 
   # PSADM #
@@ -29,8 +29,8 @@ cat <<- EOF
 EOF
 }
 
-printStatusHelp () {
 # Prints the help documentation for the "status" command
+printStatusHelp () {
 cat <<- EOF
 
   Usage:
@@ -42,8 +42,8 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "start" command
 printStartHelp () {
-  # Prints the help documentation for the "start" command
 cat <<- EOF
 
   Usage:
@@ -55,8 +55,8 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "stop" command
 printStopHelp () {
-  # Prints the help documentation for the "stop" command
 cat <<- EOF
 
   Usage:
@@ -68,8 +68,8 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "bounce" command
 printBounceHelp () {
-  # Prints the help documentation for the "bounce" command
 cat <<- EOF
 
   Usage:
@@ -81,8 +81,8 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "show" command
 printShowHelp () {
-  # Prints the help documentation for the "show" command
 cat <<- EOF
 
   Usage:
@@ -94,8 +94,8 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "watch" command
 printWatchHelp () {
-  # Prints the help documentation for the "watch" command
 cat <<- EOF
 
   Usage:
@@ -107,8 +107,8 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "watch" command
 printWatchAppHelp () {
-  # Prints the help documentation for the "watch" command
 cat <<- EOF
 
   Usage:
@@ -124,15 +124,15 @@ EOF
 # Environment Variable Validation
 #################################
 
+# Displays PeopleSoft-specific environment variables
 showPsftVars () {
-  # Displays PeopleSoft-specific environment variables
   for i in $ENV_VARS; do
     printf $i is set to `printenv $i`
   done
 }
 
+# Check to see if the appropriate environment variables are set
 checkPsftVars () {
- # Check to see if the appropriate environment variables are set
   for i in $ENV_VARS; do
     if [[ `printenv ${i}` = '' ]]; then
       printf "${i} is not set.  Please make sure this is set before continuing.\n"
@@ -140,15 +140,6 @@ checkPsftVars () {
     fi
   done
 }
-
-checkPsenvVars () {
-  printf "Checking if the appropriate environment variables have been sourced.\n"
-}
-
-#checkPSconfig () {
-  ## Check to see if the psconfig.sh shell script has been sourced
-  #printf "Checking if psconfig.sh has been sourced"
-#}
 
 ###############
 # Miscellaneous
