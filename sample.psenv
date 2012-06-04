@@ -2,7 +2,7 @@
 # Sample .psenv file
 
 export PS_ENV="<change_me>"  # Set this to the name of your environment settings
-                             # This is what will be shown in your prompt
+                             # (This is what will be shown in your prompt)
 
 ###############################################
 # Change the following to the appropriate paths
