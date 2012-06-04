@@ -9,12 +9,11 @@ PS_ENV_HOME=$HOME/environments
 PSENV_LIBDIR=$SPHOME/lib
 . $PSENV_LIBDIR/libpsenv.sh
 
-########################
-# Check for environments
-########################
+############
+# Validation
+############
 
 check_for_environment_dir
-
 
 ########################################
 # Parse any options passed to the script
@@ -24,8 +23,7 @@ while :
 do
   case $1 in
     -h | --help | -\?)
-      # TODO:  add help
-      printf "This is some help\n" >&2
+      print_help
       exit 0
       ;;
     -l | --list)
@@ -44,7 +42,7 @@ do
       break
       ;;
     -*)
-      printf "[WARNING]: Unknown option (ignored): $1 \n" >&2
+      printf "[PSENV]: Unknown option (ignored): $1 \n" >&2
       shift
       ;;
     *)
@@ -73,6 +71,6 @@ if [[ "$BASH_SOURCE" == "$0" ]]; then
         set_library_path                         # Set the LD_LIBRARY_PATH
         set_path                                 # Set the PATH
       else
-        printf "Environment file for $1 not found\n"
+        printf "[PSENV]: Environment file for $1 not found\n"
     fi
 fi
