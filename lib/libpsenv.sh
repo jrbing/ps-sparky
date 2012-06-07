@@ -90,12 +90,12 @@ restore_path () {
 
 source_env_file () {
   log "Sourcing the environment file..."
-  . $PS_ENV_HOME/$1.psenv
+  source $PS_ENV_HOME/$1.psenv
 }
 
 source_psconfig () {
   log "Sourcing the psconfig.sh file..."
-  . $PS_HOME/psconfig.sh # Source psconfig.sh
+  [[ $CYGWIN ]] || source $PS_HOME/psconfig.sh # Source psconfig.sh
 }
 
 set_library_path () {
