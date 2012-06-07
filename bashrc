@@ -25,14 +25,14 @@ alias update-sparky='($HOME/.ps-sparky/util/update.sh)'   # Update sparky from g
 ######################
 # OS Specific Settings
 ######################
-case $(uname) in
+case $(uname -s) in
   (Linux*)
     # TBD: Linux specific settings
   ;;
   (SunOS*)
     # TBD: Solaris specific settings
   ;;
-  (Cygwin*)
+  (CYGWIN*)
     # TBD: Cygwin specific settings
   ;;
 esac
