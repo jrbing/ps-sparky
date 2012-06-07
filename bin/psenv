@@ -7,7 +7,7 @@
 
 PS_ENV_HOME=$HOME/environments
 PSENV_LIBDIR=$SPHOME/lib
-. $PSENV_LIBDIR/libpsenv.sh
+source $PSENV_LIBDIR/libpsenv.sh
 
 ############
 # Validation
@@ -24,14 +24,14 @@ do
   case $1 in
     -h | --help | -\?)
       print_help
-      exit 0
+      break
       ;;
     -l | --list)
       printf "Environment files: \n" >&2
       for i in "${ENV_FILES[@]}"; do
         printf "$i\n"
       done
-      exit 0
+      break
       ;;
     -v | --verbose)
       VERBOSE=$((verbose+1))
@@ -46,31 +46,28 @@ do
       shift
       ;;
     *)
+      #################################################
+      # Source environment variables from configuration
+      # if the script is being sourced
+      #################################################
+      if [[ "$BASH_SOURCE" == "$0" ]]; then
+          exit 0
+        elif [[ "$BASH_SOURCE" != "$0" ]]; then
+          if [ $(contains_environment "${ENV_FILES[@]}" $1) == "y" ]; then
+              log "Environment file for $1 found"
+              environment_reset                        # Reset the impacted environment variables
+              restore_library_path                     # Change the library path to it's previous setting
+              restore_path                             # Change the path to it's previous setting
+              source_env_file $1                       # Source the environment file
+              source_psconfig                          # Run the psconfig.sh script
+              set_library_path                         # Set the LD_LIBRARY_PATH
+              set_path                                 # Set the PATH
+            else
+              printf "[PSENV]: Environment file for $1 not found\n"
+          fi
+      fi
       break
       ;;
   esac
 done
 
-#################################################
-# Source environment variables from configuration
-# if the script is being sourced
-#################################################
-
-ENVIRONMENT=$1  # Pass in the environment
-
-if [[ "$BASH_SOURCE" == "$0" ]]; then
-    exit 0
-  elif [[ "$BASH_SOURCE" != "$0" ]]; then
-    if [ $(contains_environment "${ENV_FILES[@]}" $ENVIRONMENT) == "y" ]; then
-        log "Environment file for $1 found"
-        environment_reset                        # Reset the impacted environment variables
-        restore_library_path                     # Change the library path to it's previous setting
-        restore_path                             # Change the path to it's previous setting
-        source_env_file $ENVIRONMENT             # Source the environment file
-        source_psconfig                          # Run the psconfig.sh script
-        set_library_path                         # Set the LD_LIBRARY_PATH
-        set_path                                 # Set the PATH
-      else
-        printf "[PSENV]: Environment file for $1 not found\n"
-    fi
-fi
