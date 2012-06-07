@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Library file for psadm script
 
-ENV_VARS=( HOME PS_HOME PS_CFG_HOME PS_APP_HOME TUXDIR )
+ENV_VARS=( HOME PS_HOME PS_CFG_HOME PS_APP_HOME )
 
 ####################
 # Help Documentation
@@ -139,6 +139,11 @@ checkPsftVars () {
       exit 1
     fi
   done
+
+  if [[ ! -n "$TUXDIR" ]] && [[ ! -n "$CYGWIN" ]]; then
+    printf "TUXDIR is not set.  Please make sure this is set before continuing.\n"
+    exit 1
+  fi
 }
 
 ###############
