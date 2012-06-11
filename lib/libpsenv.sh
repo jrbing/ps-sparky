@@ -112,6 +112,6 @@ set_path () {
   export PATH=$TUXDIR/bin:$PATH
   [[ $COBDIR ]] && export PATH=$COBDIR/bin:$PATH
   [[ $ORACLE_HOME ]] && export PATH=$ORACLE_HOME/bin:$PATH
-  [[ $AGENT_HOME ]] && export PATH=$AGENT_HOME/agent_inst/bin:$PATH
+  [[ $AGENT_HOME ]] && export PATH=$AGENT_HOME/bin:$PATH
 }
 
