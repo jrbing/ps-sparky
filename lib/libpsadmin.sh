@@ -321,11 +321,13 @@ bounceWebserver () {
 
 # Start the emagent process and begin tailing the output
 startEMAgent () {
+  # TODO
   $PS_HOME/PSEMAgent/StartAgent.sh && tail -f $PS_HOME/PSEMAgent/envmetadata/logs/emf.log
 }
 
 # Start the emagent process
 stopEMAgent () {
+  # TODO
   $PS_HOME/PSEMAgent/StopAgent.sh
 }
 
@@ -338,12 +340,12 @@ stopEMAgent () {
 # Shows the status of the emagent
 showEMAgentStatus () {
   # TODO
-  $PS_HOME/PSEMViewer/GetEnvInfo.sh
+  (cd $PS_HOME/PSEMViewer && ./GetEnvInfo.sh)
 }
 
 # Purges the emagent cache
 purgeEMAgent () {
-  # TODO:  cleanup
+  # TODO
   printf " \n"
   printf "Purging Environment Management Agent Cache Files\n"
   printf " \n"

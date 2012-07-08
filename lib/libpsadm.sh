@@ -23,6 +23,7 @@ cat <<- EOF
     status      Show the status of a server process
     bounce      Restart a server process
     show        Show environment information
+    purge       Delete cached files for a process
     watch       Monitor the status of a server process
     help        Displays the help menu
 
@@ -90,6 +91,19 @@ cat <<- EOF
 
   Description:
   Returns environment information for the argument specified
+
+EOF
+}
+
+# Prints the help documentation for the "show" command
+printPurgeHelp () {
+cat <<- EOF
+
+  Usage:
+  psadm purge [ agent hub ]
+
+  Description:
+  Purges all cached files for the specified target
 
 EOF
 }

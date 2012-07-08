@@ -159,6 +159,20 @@ case $1 in
     esac
   ;;
 
+  (purge)
+    case $2 in
+      (agent)
+        purgeEMAgent
+      ;;
+      (hub)
+        purgeEMHub
+      ;;
+      (*)
+        printPurgeHelp
+      ;;
+    esac
+  ;;
+
   (watch)
     case $2 in
       (app)
