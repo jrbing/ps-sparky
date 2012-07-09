@@ -1,2 +1,6 @@
 *.taskpaper
 Guardfile
+
+skeleton/
+
+solarized-css/
