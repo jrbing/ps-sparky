@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #Title         :psadm
-#Description   :Utility script for working with PeopleSoft under Unix/Linux
+#Description   :Utility script for working with PeopleSoft servers under Unix/Linux
 #Author        :JR Bing
 #==============================================================================
 
@@ -167,6 +167,9 @@ case $1 in
       (hub)
         purgeEMHub
       ;;
+      (web)
+        purgeWebserverCache
+      ;;
       (*)
         printPurgeHelp
       ;;
@@ -199,6 +202,16 @@ case $1 in
       ;;
       (*)
         printWatchHelp
+      ;;
+    esac
+  ;;
+
+  (tail)
+    case $2 in
+      (agent)
+        tailEMAgent
+      (*)
+        printTailHelp
       ;;
     esac
   ;;

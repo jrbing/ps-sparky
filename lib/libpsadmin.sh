@@ -3,23 +3,6 @@
 
 PSADMIN_PATH=$PS_HOME/appserv
 
-#########
-# Utility
-#########
-
-psadminEXE () {
-  cd $PS_HOME/appserv
-  psadmin $@
-}
-
-checkVar () {
- # Check to see if the appropriate environment variables are set
-    if [[ `printenv ${1}` = '' ]]; then
-      printf "[PSENV]: ${1} is not set.  You'll need to set this in your environment file\n"
-      exit 1
-    fi
-}
-
 ########
 # Output
 ########
@@ -45,6 +28,83 @@ pause () {
 log () {
   printf "[PSADM]: $1\n" >&2
 }
+
+#########
+# Utility
+#########
+
+psadminEXE () {
+  cd $PS_HOME/appserv
+  psadmin $@
+}
+
+# Check to see if the appropriate environment variables are set
+checkVar () {
+  if [[ `printenv ${1}` = '' ]]; then
+    printf "[PSADM]: ${1} is not set.  You'll need to set this in your environment file\n"
+    exit 1
+  fi
+}
+
+# Delete the specified file
+deleteFile () {
+  local file_path=$1
+  if [ -f ${file_path} ]; then
+    log "INFO - Deleting file ${file_path}"
+    rm $file_path
+  else
+    log "INFO - $file_path not found"
+  fi
+}
+
+# Delete the specified directory recursively
+deleteDir () {
+  local dir_path=$1
+  if [ -d ${dir_path} ]; then
+    log "INFO - Deleting directory ${dir_path}"
+    rm -rf $dir_path
+  else
+    log "INFO - $dir_path not found"
+  fi
+}
+
+# Delete the specified directory's contents
+deleteDirContents () {
+  local dir_path=$1
+  if [ -d ${dir_path} ]; then
+    log "INFO - Deleting contents of ${dir_path}"
+    rm -rf $dir_path/*
+  else
+    log "INFO - $dir_path not found"
+  fi
+}
+
+assignScriptExtension () {
+  case $(uname -s) in
+    (Linux*)
+      SCRIPT_EXT=".sh"
+    ;;
+    (SunOS*)
+      SCRIPT_EXT=".sh"
+    ;;
+    (CYGWIN*)
+      SCRIPT_EXT=".bat"
+    ;;
+  esac
+}
+
+#multiTail () {
+  ## When this exits, exit all back ground process also.
+  #trap 'kill $(jobs -p)' EXIT
+  ## iterate through the each given file names,
+  #for file in "$@"
+  #do
+    ## show tails of each in background.
+    #tail -f $file &
+  #done
+  ## wait .. until CTRL+C
+  #wait
+#}
 
 ###########
 # Appserver
@@ -258,9 +318,10 @@ watchProcessSchedulerStatus () {
 startWebserver () {
   checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh ]; then
+    log "INFO - Attempting to start webserver..."
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh
   else
-    log "The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/startPIA.sh was not found"
+    log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/startPIA.sh was not found"
     exit 1
   fi
 }
@@ -269,18 +330,13 @@ startWebserver () {
 stopWebserver () {
   checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh ]; then
+    log "INFO - Attempting to stop webserver..."
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh
   else
-    log "The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/stopPIA.sh was not found"
+    log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/stopPIA.sh was not found"
     exit 1
   fi
 }
-
-#killWebserver () {
-  # TODO
-  #checkVar "PS_PIA_DOMAIN"
-  # $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA.pid
-#}
 
 # Shows the status of the webserver
 showWebserverStatus () {
@@ -298,17 +354,10 @@ showWebserverStatus () {
 # Purgest the webserver cache
 purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
-  printf "\n"
-  printf "Purging Webserver Cache Files\n"
-  printf "\n"
-  set -x
-  rm -r $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.WAR/$PS_PIA_DOMAIN/cache/*
-  set +x
-  printf "\n"
-  printf "Cache Cleared"
-  printf "\n"
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/$PS_PIA_DOMAIN/cache
 }
 
+# Stop, clear the cache, and start the webserver
 bounceWebserver () {
   stopWebserver
   purgeWebserverCache
@@ -321,50 +370,46 @@ bounceWebserver () {
 
 # Start the emagent process and begin tailing the output
 startEMAgent () {
-  # TODO
-  $PS_HOME/PSEMAgent/StartAgent.sh && tail -f $PS_HOME/PSEMAgent/envmetadata/logs/emf.log
+  checkVar "PS_HOME"
+  assignScriptExtension
+  $PS_HOME/PSEMAgent/StartAgent$SCRIPT_EXT
 }
 
 # Start the emagent process
 stopEMAgent () {
-  # TODO
-  $PS_HOME/PSEMAgent/StopAgent.sh
+  checkVar "PS_HOME"
+  assignScriptExtension
+  $PS_HOME/PSEMAgent/StopAgent$SCRIPT_EXT
 }
 
-#killEMAgent () {
-  # TODO
-  # Look for the following process in ps and kill the associated PID
-  #../jre/bin/java com.peoplesoft.pt.environmentmanagement.agent.Agent shutdown
-#}
+tailEMAgent () {
+  checkVar "PS_HOME"
+  tail -f $PS_HOME/PSEMAgent/envmetadata/logs/emf.log
+}
 
 # Shows the status of the emagent
 showEMAgentStatus () {
   # TODO
+  checkVar "PS_HOME"
   (cd $PS_HOME/PSEMViewer && ./GetEnvInfo.sh)
 }
 
 # Purges the emagent cache
 purgeEMAgent () {
-  # TODO
-  printf " \n"
-  printf "Purging Environment Management Agent Cache Files\n"
-  printf " \n"
-  set -x
-  rm     $PS_HOME/PSEMAgent/APPSRV.LOG
-  rm     $PS_HOME/PSEMAgent/nohup.out
-  rm     $PS_HOME/PSEMAgent/ULOG.*
-  rm     $PS_HOME/PSEMAgent/envmetadata/data/emf_psae*.sh
-  rm     $PS_HOME/PSEMAgent/envmetadata/data/emf_psreleaseinfo.sh
-  rm     $PS_HOME/PSEMAgent/envmetadata/data/search-results.xml
-  rm -rf $PS_HOME/PSEMAgent/envmetadata/data/ids
-  rm     $PS_HOME/PSEMAgent/envmetadata/logs/*
-  rm -rf $PS_HOME/PSEMAgent/envmetadata/PersistentStorage/*
-  rm -rf $PS_HOME/PSEMAgent/envmetadata/scratchpad/*
-  #rm -rf $PS_HOME/PSEMAgent/envmetadata/transactions/*
-  set +x
-  printf " \n"
-  printf "Files Cleared\n"
-  printf " \n"
+  checkVar "PS_HOME"
+  assignScriptExtension
+  deleteFile $PS_HOME/PSEMAgent/APPSRV.LOG
+  deleteFile $PS_HOME/PSEMAgent/nodeid
+  deleteFile $PS_HOME/PSEMAgent/nohup.out
+  deleteFile $PS_HOME/PSEMAgent/ULOG.*
+  deleteFile $PS_HOME/PSEMAgent/envmetadata/data/emf_psae*$SCRIPT_EXT
+  deleteFile $PS_HOME/PSEMAgent/envmetadata/data/emf_psreleaseinfo$SCRIPT_EXT
+  deleteFile $PS_HOME/PSEMAgent/envmetadata/data/search-results.xml
+  deleteDir $PS_HOME/PSEMAgent/envmetadata/data/ids
+  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/logs
+  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/PersistentStorage
+  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/scratchpad
+  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/transactions
 }
 
 # Restarts the emagent
@@ -380,32 +425,21 @@ bounceEMAgent () {
 
 # Purges the emhub cache
 purgeEMHub () {
-  # TODO:  test
-  printf " \n"
-  printf "Purging Environment Management Hub Cache Files\n"
-  printf " \n"
-  set -x
-  rm -rf $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/environment
-  rm -rf $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies
-  rm     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat
-  rm     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat
-  rm     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/logs/*
-  rm -rf $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/PersistentStorage/*
-  rm -rf $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/scratchpad/*
-  rm -rf $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/transactions/*
-  set +x
-  printf " \n"
-  printf "Files Cleared\n"
-  printf " \n"
+  checkVar "PS_HOME"
+  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat
+  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat
+  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies
+  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/environment
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/logs
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/PersistentStorage
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/scratchpad
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/transactions
 }
 
-# Restarts the emhub
+# Restarts the emhub and purges the cache
 bounceEMHub () {
-  stopEMAgent
   stopWebserver
   purgeWebserverCache
   purgeEMHub
-  purgeEMAgent
   startWebserver
-  startEMAgent
 }

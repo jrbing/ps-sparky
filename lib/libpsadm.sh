@@ -22,9 +22,10 @@ cat <<- EOF
     stop        Stop a server process
     status      Show the status of a server process
     bounce      Restart a server process
-    show        Show environment information
-    purge       Delete cached files for a process
+    show        Show environment variable information
+    purge       Delete cached files for a server process
     watch       Monitor the status of a server process
+    tail        Tail the logfile of a server process
     help        Displays the help menu
 
 EOF
@@ -100,7 +101,7 @@ printPurgeHelp () {
 cat <<- EOF
 
   Usage:
-  psadm purge [ agent hub ]
+  psadm purge [ agent hub web ]
 
   Description:
   Purges all cached files for the specified target
@@ -130,6 +131,19 @@ cat <<- EOF
 
   Description:
   Shows appserver status information until canceled
+
+EOF
+}
+
+# Prints the help documentation for the "watch" command
+printTailHelp () {
+cat <<- EOF
+
+  Usage:
+  psadm tail [ agent ]
+
+  Description:
+  Runs a "tail -f" against the logfile of the specified process
 
 EOF
 }
@@ -179,15 +193,3 @@ checkPsftVars () {
   #printf "    \b\b\b\b"
 #}
 
-#multiTail () {
-  ## When this exits, exit all back ground process also.
-  #trap 'kill $(jobs -p)' EXIT
-  ## iterate through the each given file names,
-  #for file in "$@"
-  #do
-    ## show tails of each in background.
-    #tail -f $file &
-  #done
-  ## wait .. until CTRL+C
-  #wait
-#}
