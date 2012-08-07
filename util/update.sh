@@ -18,13 +18,13 @@ fi
 printf "Updating ps-sparky from github:\n"
 cd ~ && \
 /usr/bin/env rm -rf /tmp/ps-sparky* && \
-/usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/jrbing/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
+/usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/ps-admin/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
 /usr/bin/env gunzip -vf /tmp/ps-sparky.tar.gz && \
 /usr/bin/env tar -xvf /tmp/ps-sparky.tar && \
-/usr/bin/env cp -rf jrbing-ps-sparky-???????/* .ps-sparky/
+/usr/bin/env cp -rf ps-admin-ps-sparky-???????/* .ps-sparky/
 
 ########################
 # Remove temporary files
 ########################
 printf "Cleaning up...\n"
-/usr/bin/env rm -rf jrbing-ps-sparky-???????/
+/usr/bin/env rm -rf ps-admin-ps-sparky-???????/

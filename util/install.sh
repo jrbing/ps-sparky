@@ -25,7 +25,7 @@ mkdir .ps-sparky && \
 
 printf "Cleaning up..."
 cd ~
-rm -rf jrbing-ps-sparky-???????/
+rm -rf ps-admin-ps-sparky-???????/
 
 printf "Running bootstrap script..."
 ./.ps-sparky/util/bootstrap.sh
