@@ -1,36 +1,17 @@
-PS-SPARKY
-===========
+ps-sparky
+=========
 
-_**CAUTION:** this is a work in process, and is not yet intended to be
-used in a production environment_
-
-About
------
 Sparky is a collection of tools to help bootstrap and manage a
 PeopleSoft Web, App, or Process Scheduler server running on Unix or
 Linux.  
 
-Features
---------
-
-### Default Bash Preferences
-Sparky comes with the following default settings:
-
-- Custom prompt for displaying current environment
-- Bash Aliases
-    - **psa** → starts the psadmin program
-
-### Scripts
-Additionally, Sparky comes with a few helper scripts that are automatically added to the PATH.
-
-- **psenv** → Script to toggle PeopleSoft environment variable settings.  This is extremely useful if you're working with multiple PeopleSoft environments on a single machine. 
-- **psadm** → Wrapper script for the psadmin and various other scripts in the PeopleSoft home
-
+See the [ps-sparky site](http://psadm.in/sparky/about "ps-sparky") for
+more information.
 
 Contributing
 ------------
-If you'd like to contribute, simply fork the repository and create a pull request.
-
+If you'd like to contribute, simply fork the repository and create a
+pull request.
 
 License
 -------
