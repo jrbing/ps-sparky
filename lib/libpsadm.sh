@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Library file for psadm script
 
-ENV_VARS=( HOME PS_HOME PS_CFG_HOME PS_APP_HOME )
+ENV_VARS=( HOME PS_HOME PS_CFG_HOME PS_APP_HOME PS_PIA_HOME )
 
 ####################
 # Help Documentation
@@ -96,7 +96,7 @@ cat <<- EOF
 EOF
 }
 
-# Prints the help documentation for the "show" command
+# Prints the help documentation for the "purge" command
 printPurgeHelp () {
 cat <<- EOF
 
@@ -122,7 +122,7 @@ cat <<- EOF
 EOF
 }
 
-# Prints the help documentation for the "watch" command
+# Prints the help documentation for the "watch app" command
 printWatchAppHelp () {
 cat <<- EOF
 
@@ -135,7 +135,7 @@ cat <<- EOF
 EOF
 }
 
-# Prints the help documentation for the "watch" command
+# Prints the help documentation for the "tail" command
 printTailHelp () {
 cat <<- EOF
 

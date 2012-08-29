@@ -4,9 +4,9 @@
 ############################
 # Place Custom Settings Here
 ############################
-export EDITOR=vim             # Change to whatever editor you prefer
-export USER="psoft"           # Change to the PeopleSoft service account username
-export PATH=$PATH             # Add any custom changes to your PATH here
+export EDITOR=vim                        # Change to whatever editor you prefer
+export USER="psoft"                      # Change to the PeopleSoft service account username
+export PATH=$PATH                        # Add any custom changes to your PATH here
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH  # Add any custom changes to your LD_LIBRARY_PATH here
 
 # --------------------------------------------- #

@@ -2,7 +2,7 @@
 # ps-sparky bash preferences file
 # --DO NOT MODIFY--
 # This file is overwritten whenever an update is applied
-# Please update the ~/.localrc file if necessary
+# Please update the ~/.localrc file instead
 
 ###############
 # Initial Setup

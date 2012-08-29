@@ -12,11 +12,12 @@ export PS_ENV="<change_me>"  # Set this to the name of your environment settings
 export PS_HOME="/path/to/PS_HOME"
 export PS_CFG_HOME="/path/to/PS_CFG_HOME"
 export PS_APP_HOME="/path/to/PS_APP_HOME"
+export PS_PIA_HOME="/path/to/PS_PIA_HOME"
 export TUXDIR="/path/to/tuxedo/installation"
 
 # ----- 3rd Party Tools -----
-#export JAVA_HOME="/path/to/java/installation"   # Required if using Weblogic
-#export COBDIR="/path/to/cobol/installation"     # Required if using COBOL
+#export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic
+#export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
 
 # ----- PSADM -----
 # - Change the following to
