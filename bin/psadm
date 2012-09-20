@@ -135,12 +135,12 @@ case $1 in
         bounceEMHub
       ;;
       (all)
-        stopAppserver
         stopProcessScheduler
         stopWebserver
+        stopAppserver
         startAppserver
-        startProcessScheduler
         startWebserver
+        startProcessScheduler
       ;;
       (*)
         printBounceHelp
