@@ -443,3 +443,33 @@ bounceEMHub () {
   purgeEMHub
   startWebserver
 }
+
+#######
+# Cobol
+#######
+
+# Start the emagent process and begin tailing the output
+compileCobol () {
+  checkVar "PS_HOME"
+  if [ -f $PS_HOME/setup/pscbl.mak ]; then
+    log "Recompiling Cobol"
+    $PS_HOME/setup/pscbl.mak
+    printBlankLine
+  else
+    log "Could not find the file $PS_HOME/setup/pscbl.mak"
+    exit 1
+  fi
+}
+
+# Start the emagent process
+linkCobol () {
+  checkVar "PS_HOME"
+  if [ -f $PS_HOME/setup/psrun.mak ]; then
+    log "Linking COBOL"
+    $PS_HOME/setup/psrun.mak
+    printBlankLine
+  else
+    log "Could not find the file $PS_HOME/setup/psrun.mak"
+    exit 1
+  fi
+}

@@ -216,6 +216,14 @@ case $1 in
     esac
   ;;
 
+  (compile)
+    compileCobol
+  ;;
+
+  (link)
+    linkCobol
+  ;;
+
   (*)
     printHelp
   ;;

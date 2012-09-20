@@ -26,6 +26,8 @@ cat <<- EOF
     purge       Delete cached files for a server process
     watch       Monitor the status of a server process
     tail        Tail the logfile of a server process
+    compile     Run the pscbl.mak script to compile cobol
+    link        Run the psrun.mak script to link cobol
     help        Displays the help menu
 
 EOF
