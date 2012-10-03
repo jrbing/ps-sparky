@@ -13,7 +13,7 @@ printHL () {
 
 printBanner () {
   printHL
-  printf "####  $1  ####"
+  printf "\e[00;31m####  $1  ####\e[00m\n"
   printHL
 }
 
@@ -26,7 +26,7 @@ pause () {
 }
 
 log () {
-  printf "[PSADM]: $1\n" >&2
+  printf "\e[00;31m[PSADM]: $1\e[00m\n" >&2
 }
 
 #########
@@ -41,7 +41,7 @@ psadminEXE () {
 # Check to see if the appropriate environment variables are set
 checkVar () {
   if [[ `printenv ${1}` = '' ]]; then
-    printf "[PSADM]: ${1} is not set.  You'll need to set this in your environment file\n"
+    log "ERROR - ${1} is not set.  You'll need to set this in your environment file."
     exit 1
   fi
 }
