@@ -90,6 +90,9 @@ assignScriptExtension () {
     (CYGWIN*)
       SCRIPT_EXT=".bat"
     ;;
+    (*)
+      SCRIPT_EXT=".sh"
+    ;;
   esac
 }
 
