@@ -96,18 +96,15 @@ assignScriptExtension () {
   esac
 }
 
-#multiTail () {
-  ## When this exits, exit all back ground process also.
-  #trap 'kill $(jobs -p)' EXIT
-  ## iterate through the each given file names,
-  #for file in "$@"
-  #do
-    ## show tails of each in background.
-    #tail -f $file &
-  #done
-  ## wait .. until CTRL+C
-  #wait
-#}
+multiTail () {
+  trap 'kill $(jobs -p)' EXIT
+  for file in "$@"
+  do
+    log "INFO - Beginning tail of $file"
+    tail -n 50 -f $file &
+  done
+  wait
+}
 
 ###########
 # Appserver
@@ -116,34 +113,32 @@ assignScriptExtension () {
 #Boots an application server domain
 startAppserver () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Starting application domain $PS_APP_DOMAIN"
   psadminEXE -c parallelboot -d $PS_APP_DOMAIN
 }
 
 #Reloads the domain configuration for the domain.
 configAppserver () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Reloading configuration for $PS_APP_DOMAIN"
   psadminEXE -c configure -d $PS_APP_DOMAIN
 }
 
-#Shuts down the application server domain, by using a normal shutdown
-#method. In a normal shutdown, the domain waits for users to complete
-#their tasks and turns away new requests before terminating all of the
-#processes in the domain.
+#Shuts down the application server domain, by using a normal shutdown method
 stopAppserver () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Stopping application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown -d $PS_APP_DOMAIN
 }
 
-#Shuts down the application server domain by using a forced shutdown method.
-#In a forced shutdown, the domain immediately terminates all of the processes
-#in the domain.
+#Shuts down the application server domain by using a forced shutdown method
 killAppserver () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Killing application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown! -d $PS_APP_DOMAIN
 }
 
-#Displays the processes that have been booted for the PSDMO domain. This
-#includes the system process ID for each process.
+#Displays the processes that have been booted for the PSDMO domain
 showAppserverProcesses () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Processes"
@@ -151,8 +146,7 @@ showAppserverProcesses () {
   printBlankLine
 }
 
-#Displays the Tuxedo processes and PeopleSoft server processes that are
-#currently running
+#Displays the Tuxedo processes and PeopleSoft server processes
 showAppserverServerStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Status"
@@ -160,7 +154,7 @@ showAppserverServerStatus () {
   printBlankLine
 }
 
-#Displays the clients connected to the application server domain.
+#Displays the clients connected to the application server domain
 showAppserverClientStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Client Status"
@@ -180,18 +174,21 @@ showAppserverQueueStatus () {
 #Preloads the server cache for the domain.
 preloadAppserverCache () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Preloading appserver cache for domain $PS_APP_DOMAIN"
   psadminEXE -c preload -d $PS_APP_DOMAIN
 }
 
 #Cleans the IPC resources for the domain.
 flushAppserverIPC () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Flushing appserver IPC resources for domain $PS_APP_DOMAIN"
   psadminEXE -c cleanipc -d $PS_APP_DOMAIN
 }
 
 #Purges the cache for the domain.
 purgeAppserverCache () {
   checkVar "PS_APP_DOMAIN"
+  log "INFO - Clearing appserver cache for domain $PS_APP_DOMAIN"
   psadminEXE -c purge -d $PS_APP_DOMAIN
 }
 
@@ -228,7 +225,7 @@ watchAppserverServerStatus () {
   done
 }
 
-#Loops through the appserver queue status until canceled
+#Loops through the appserver client status until canceled
 watchAppserverClientStatus () {
   while true
   do
@@ -252,6 +249,15 @@ watchAppserverQueueStatus () {
   done
 }
 
+#Tails the appserver logs
+tailAppserver () {
+  checkVar "PS_HOME"
+  checkVar "PS_APP_DOMAIN"
+  local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
+  local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
+  multiTail $app_log_file $tux_log_file
+}
+
 ###################
 # Process Scheduler
 ###################
@@ -259,24 +265,28 @@ watchAppserverQueueStatus () {
 #Starts a Process Scheduler
 startProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Starting process scheduler domain $PS_PRCS_DOMAIN"
   psadminEXE -p start -d $PS_PRCS_DOMAIN
 }
 
 #Stops a Process Scheduler
 stopProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Stopping process scheduler domain $PS_PRCS_DOMAIN"
   psadminEXE -p stop -d $PS_PRCS_DOMAIN
 }
 
 #Kills the domain (similar to forced shutdown)
 killProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Killing process scheduler domain $PS_PRCS_DOMAIN"
   psadminEXE -p kill -d $PS_PRCS_DOMAIN
 }
 
 #Configures a Process Scheduler
 configProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Reloading configuration for $PS_PRCS_DOMAIN"
   psadminEXE -p configure -d $PS_PRCS_DOMAIN
 }
 
@@ -291,6 +301,7 @@ showProcessSchedulerStatus () {
 #Cleans the IPC resources for specified domain
 flushProcessSchedulerIPC () {
   checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Flushing process scheduler IPC resources for domain $PS_PRCS_DOMAIN"
   psadminEXE -p cleanipc -d $PS_PRCS_DOMAIN
 }
 
@@ -313,6 +324,16 @@ watchProcessSchedulerStatus () {
     sleep 5
   done
 }
+
+#Tail the process scheduler logs
+tailProcessScheduler () {
+  checkVar "PS_HOME"
+  checkVar "PS_APP_DOMAIN"
+  local prcs_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/SCHDLR_`date +%m%d`.LOG
+  local tux_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
+  multiTail $prcs_log_file $tux_log_file
+}
+
 ###########
 # Webserver
 ###########
@@ -321,7 +342,7 @@ watchProcessSchedulerStatus () {
 startWebserver () {
   checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh ]; then
-    log "INFO - Attempting to start webserver..."
+    log "INFO - Starting webserver for domain $PS_PIA_DOMAIN"
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh
   else
     log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/startPIA.sh was not found"
@@ -333,7 +354,7 @@ startWebserver () {
 stopWebserver () {
   checkVar "PS_PIA_DOMAIN"
   if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh ]; then
-    log "INFO - Attempting to stop webserver..."
+    log "INFO - Stopping webserver for domain $PS_PIA_DOMAIN"
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh
   else
     log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/stopPIA.sh was not found"
@@ -349,7 +370,7 @@ showWebserverStatus () {
     $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/singleserverStatus.sh
     printBlankLine
   else
-    log "The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/singleserverStatus.sh was not found"
+    log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/singleserverStatus.sh was not found"
     exit 1
   fi
 }
@@ -357,6 +378,7 @@ showWebserverStatus () {
 # Purgest the webserver cache
 purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
+  log "INFO - Purging webserver cache for domain $PS_PIA_DOMAIN"
   deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/$PS_PIA_DOMAIN/cache
 }
 
@@ -365,6 +387,15 @@ bounceWebserver () {
   stopWebserver
   purgeWebserverCache
   startWebserver
+}
+
+#Tail the webserver logs
+tailWebserver () {
+  checkVar "PS_PIA_DOMAIN"
+  local pia_stdout_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stdout.log
+  local pia_stderr_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stderr.log
+  local pia_weblogic_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_weblogic.log
+  multiTail $pia_stdout_log $pia_stderr_log $pia_weblogic_log
 }
 
 ##############################
@@ -385,11 +416,6 @@ stopEMAgent () {
   $PS_HOME/PSEMAgent/StopAgent$SCRIPT_EXT
 }
 
-tailEMAgent () {
-  checkVar "PS_HOME"
-  tail -f $PS_HOME/PSEMAgent/envmetadata/logs/emf.log
-}
-
 # Shows the status of the emagent
 showEMAgentStatus () {
   # TODO
@@ -400,6 +426,7 @@ showEMAgentStatus () {
 # Purges the emagent cache
 purgeEMAgent () {
   checkVar "PS_HOME"
+  log "INFO - Purging EMAgent cache"
   assignScriptExtension
   deleteFile $PS_HOME/PSEMAgent/APPSRV.LOG
   deleteFile $PS_HOME/PSEMAgent/nodeid
@@ -422,6 +449,14 @@ bounceEMAgent () {
   startEMAgent
 }
 
+#Tail the environment management agent log
+tailEMAgent () {
+  checkVar "PS_HOME"
+  local agent_log=$PS_HOME/PSEMAgent/envmetadata/logs/emf.log
+  multiTail $agent_log
+}
+
+
 ############################
 # Environment Management Hub
 ############################
@@ -429,6 +464,7 @@ bounceEMAgent () {
 # Purges the emhub cache
 purgeEMHub () {
   checkVar "PS_HOME"
+  log "INFO - Purging EMHub cache"
   deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat
   deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat
   deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies
@@ -455,11 +491,11 @@ bounceEMHub () {
 compileCobol () {
   checkVar "PS_HOME"
   if [ -f $PS_HOME/setup/pscbl.mak ]; then
-    log "Recompiling Cobol"
+    log "INFO - Recompiling Cobol"
     $PS_HOME/setup/pscbl.mak
     printBlankLine
   else
-    log "Could not find the file $PS_HOME/setup/pscbl.mak"
+    log "ERROR - Could not find the file $PS_HOME/setup/pscbl.mak"
     exit 1
   fi
 }
@@ -468,11 +504,11 @@ compileCobol () {
 linkCobol () {
   checkVar "PS_HOME"
   if [ -f $PS_HOME/setup/psrun.mak ]; then
-    log "Linking COBOL"
+    log "INFO - Linking COBOL"
     $PS_HOME/setup/psrun.mak
     printBlankLine
   else
-    log "Could not find the file $PS_HOME/setup/psrun.mak"
+    log "ERROR - Could not find the file $PS_HOME/setup/psrun.mak"
     exit 1
   fi
 }

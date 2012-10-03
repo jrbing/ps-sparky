@@ -208,6 +208,15 @@ case $1 in
 
   (tail)
     case $2 in
+      (app)
+        tailAppserver
+      ;;
+      (web)
+        tailWebserver
+      ;;
+      (prcs)
+        tailProcessScheduler
+      ;;
       (agent)
         tailEMAgent
       ;;

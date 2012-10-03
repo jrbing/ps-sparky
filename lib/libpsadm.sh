@@ -142,10 +142,10 @@ printTailHelp () {
 cat <<- EOF
 
   Usage:
-  psadm tail [ agent ]
+  psadm tail [ app prcs web agent ]
 
   Description:
-  Runs "tail -f" against the logfile of the specified process
+  Runs "tail -f" against the logfile(s) of the specified process
 
 EOF
 }
