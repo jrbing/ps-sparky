@@ -2,6 +2,7 @@
 # Library file for psadmin commands
 
 PSADMIN_PATH=$PS_HOME/appserv
+BASEDIR=$(dirname $0)
 
 ########
 # Output
@@ -26,7 +27,7 @@ pause () {
 }
 
 log () {
-  printf "\e[00;31m[PSADM]: $1\e[00m\n" >&2
+  printf "\n\e[00;31m[PSADM]: $1\e[00m\n" >&2
 }
 
 #########
@@ -266,14 +267,28 @@ tailAppserver () {
 startProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Starting process scheduler domain $PS_PRCS_DOMAIN"
-  psadminEXE -p start -d $PS_PRCS_DOMAIN
+  case $(uname -s) in
+    (CYGWIN*)
+      $BASEDIR/../lib/nt/start_prcs.cmd $PS_HOME $PS_APP_HOME $PS_CFG_HOME $PS_PRCS_DOMAIN
+    ;;
+    (*)
+      psadminEXE -p start -d $PS_PRCS_DOMAIN
+    ;;
+  esac
 }
 
 #Stops a Process Scheduler
 stopProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Stopping process scheduler domain $PS_PRCS_DOMAIN"
-  psadminEXE -p stop -d $PS_PRCS_DOMAIN
+  case $(uname -s) in
+    (CYGWIN*)
+      $BASEDIR/../lib/nt/stop_prcs.cmd $PS_HOME $PS_APP_HOME $PS_CFG_HOME $PS_PRCS_DOMAIN
+    ;;
+    (*)
+      psadminEXE -p stop -d $PS_PRCS_DOMAIN
+    ;;
+  esac
 }
 
 #Kills the domain (similar to forced shutdown)
@@ -375,7 +390,7 @@ showWebserverStatus () {
   fi
 }
 
-# Purgest the webserver cache
+# Purge the webserver cache
 purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
   log "INFO - Purging webserver cache for domain $PS_PIA_DOMAIN"
