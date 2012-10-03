@@ -145,7 +145,7 @@ cat <<- EOF
   psadm tail [ agent ]
 
   Description:
-  Runs a "tail -f" against the logfile of the specified process
+  Runs "tail -f" against the logfile of the specified process
 
 EOF
 }
