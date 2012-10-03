@@ -152,7 +152,7 @@ showAppserverProcesses () {
 }
 
 #Displays the Tuxedo processes and PeopleSoft server processes that are
-#currently running in the PSDMO application server domain.
+#currently running
 showAppserverServerStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Status"
