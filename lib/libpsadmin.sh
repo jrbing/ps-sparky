@@ -39,6 +39,22 @@ psadminEXE () {
   psadmin $@
 }
 
+psadminEXEcute () {
+  local server_type=$1
+  local command=$2
+  local server_domain=$3
+
+  case $(uname -s) in
+    (CYGWIN*)
+      $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
+    ;;
+    (*)
+      cd $PS_HOME/appserv
+      psadmin -$server_type $command -d $server_domain
+    ;;
+  esac
+}
+
 # Check to see if the appropriate environment variables are set
 checkVar () {
   if [[ `printenv ${1}` = '' ]]; then
@@ -267,49 +283,39 @@ tailAppserver () {
 startProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Starting process scheduler domain $PS_PRCS_DOMAIN"
-  case $(uname -s) in
-    (CYGWIN*)
-      $BASEDIR/../lib/nt/start_prcs.cmd $PS_HOME $PS_APP_HOME $PS_CFG_HOME $PS_PRCS_DOMAIN
-    ;;
-    (*)
-      psadminEXE -p start -d $PS_PRCS_DOMAIN
-    ;;
-  esac
+  psadminEXEcute p start ${PS_PRCS_DOMAIN}
+  printBlankLine
 }
 
 #Stops a Process Scheduler
 stopProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Stopping process scheduler domain $PS_PRCS_DOMAIN"
-  case $(uname -s) in
-    (CYGWIN*)
-      $BASEDIR/../lib/nt/stop_prcs.cmd $PS_HOME $PS_APP_HOME $PS_CFG_HOME $PS_PRCS_DOMAIN
-    ;;
-    (*)
-      psadminEXE -p stop -d $PS_PRCS_DOMAIN
-    ;;
-  esac
+  psadminEXEcute p stop ${PS_PRCS_DOMAIN}
+  printBlankLine
 }
 
 #Kills the domain (similar to forced shutdown)
 killProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Killing process scheduler domain $PS_PRCS_DOMAIN"
-  psadminEXE -p kill -d $PS_PRCS_DOMAIN
+  psadminEXEcute p kill ${PS_PRCS_DOMAIN}
+  printBlankLine
 }
 
 #Configures a Process Scheduler
 configProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Reloading configuration for $PS_PRCS_DOMAIN"
-  psadminEXE -p configure -d $PS_PRCS_DOMAIN
+  psadminEXEcute p configure ${PS_PRCS_DOMAIN}
+  printBlankLine
 }
 
 #Displays the status of a Process Scheduler
 showProcessSchedulerStatus () {
   checkVar "PS_PRCS_DOMAIN"
   printBanner "Process Scheduler Status"
-  psadminEXE -p status -d $PS_PRCS_DOMAIN
+  psadminEXEcute p status ${PS_PRCS_DOMAIN}
   printBlankLine
 }
 
@@ -317,7 +323,7 @@ showProcessSchedulerStatus () {
 flushProcessSchedulerIPC () {
   checkVar "PS_PRCS_DOMAIN"
   log "INFO - Flushing process scheduler IPC resources for domain $PS_PRCS_DOMAIN"
-  psadminEXE -p cleanipc -d $PS_PRCS_DOMAIN
+  psadminEXEcute p cleanipc ${PS_PRCS_DOMAIN}
 }
 
 #Stops, purges, reconfigures, and restarts the process scheduler server
