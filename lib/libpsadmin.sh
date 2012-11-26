@@ -505,14 +505,14 @@ bounceEMHub () {
 }
 
 #######
-# Cobol
+# COBOL
 #######
 
-# Start the emagent process and begin tailing the output
+# Compile COBOL
 compileCobol () {
   checkVar "PS_HOME"
   if [[ -f $PS_HOME/setup/pscbl.mak ]]; then
-    log "INFO - Recompiling Cobol"
+    log "INFO - Recompiling COBOL"
     cd $PS_HOME/setup && ./pscbl.mak
     printBlankLine
   else
@@ -521,7 +521,7 @@ compileCobol () {
   fi
 }
 
-# Start the emagent process
+# Link COBOL
 linkCobol () {
   checkVar "PS_HOME"
   if [[ -f $PS_HOME/setup/psrun.mak ]]; then
