@@ -511,9 +511,9 @@ bounceEMHub () {
 # Start the emagent process and begin tailing the output
 compileCobol () {
   checkVar "PS_HOME"
-  if [ -f $PS_HOME/setup/pscbl.mak ]; then
+  if [[ -f $PS_HOME/setup/pscbl.mak ]]; then
     log "INFO - Recompiling Cobol"
-    $PS_HOME/setup/pscbl.mak
+    cd $PS_HOME/setup && ./pscbl.mak
     printBlankLine
   else
     log "ERROR - Could not find the file $PS_HOME/setup/pscbl.mak"
@@ -524,9 +524,9 @@ compileCobol () {
 # Start the emagent process
 linkCobol () {
   checkVar "PS_HOME"
-  if [ -f $PS_HOME/setup/psrun.mak ]; then
+  if [[ -f $PS_HOME/setup/psrun.mak ]]; then
     log "INFO - Linking COBOL"
-    $PS_HOME/setup/psrun.mak
+    cd $PS_HOME/setup && ./psrun.mak
     printBlankLine
   else
     log "ERROR - Could not find the file $PS_HOME/setup/psrun.mak"
