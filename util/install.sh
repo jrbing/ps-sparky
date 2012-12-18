@@ -14,6 +14,10 @@ fi
 /usr/bin/env curl -sSfL https://www.digicert.com/testroot/DigiCertHighAssuranceEVRootCA.crt >> /tmp/curl-ca-bundle-new.crt
 /usr/bin/env curl -sSfL https://www.digicert.com/CACerts/DigiCertHighAssuranceEVCA-1.crt >> /tmp/curl-ca-bundle-new.crt
 
+################
+# Install Sparky
+################
+
 printf "Downloading ps-sparky from github:\n"
 cd ~ && \
 mkdir .ps-sparky && \
