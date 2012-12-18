@@ -138,8 +138,17 @@ case $1 in
         stopProcessScheduler
         stopWebserver
         stopAppserver
+
+        flushAppserverIPC
+        purgeAppserverCache
+        configAppserver
         startAppserver
+
+        purgeWebserverCache
         startWebserver
+
+        flushProcessSchedulerIPC
+        configProcessScheduler
         startProcessScheduler
       ;;
       (*)
