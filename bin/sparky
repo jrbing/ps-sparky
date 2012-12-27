@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#Title         :sparky
+#Description   :Script to perform maintenance on your sparky installation
+#Author        :JR Bing
+#==============================================================================
+
+###############################
+# Source the function libraries
+###############################
+
+BASEDIR=$(dirname $0)
+source $BASEDIR/../lib/libsparky.sh
+
+case $1 in
+
+  (help)
+    # Print help
+  ;;
+
+  (update)
+    # Updates sparky
+  ;;
+
+  (version)
+    # Prints the current version of sparky
+  ;;
+
+  (get)
+    # Downloads various installation files for PeopleSoft
+    case $2 in
+      (peopletools)
+        # Download a specific peopletools version
+      ;;
+      (weblogic)
+        # Download weblogic
+      ;;
+      (tuxedo)
+        # Download tuxedo
+      ;;
+      (jrockit)
+        # Download jrockit
+      ;;
+      (verity)
+        # Download verity
+      ;;
+    esac
+
+  ;;
+
+esac
