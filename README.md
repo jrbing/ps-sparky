@@ -5,7 +5,7 @@ Sparky is a collection of tools to help bootstrap and manage a
 PeopleSoft Web, App, or Process Scheduler server running on Unix or
 Linux.  
 
-See the [ps-sparky site](http://psadm.in/sparky/about "ps-sparky") for
+See the [ps-sparky site](http://psadm.in/projects/sparky "ps-sparky") for
 more information.
 
 Contributing
