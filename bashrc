@@ -41,7 +41,7 @@ esac
 #################
 # Source .localrc
 #################
-if [ -f ~/.localrc ]; then
+if [[ -f ~/.localrc ]]; then
   . ~/.localrc
 else
   printf ".localrc file not found in home directory\n"
