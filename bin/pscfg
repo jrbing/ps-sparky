@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#Title         :pscfg
+#Description   :Utility script for modifying PeopleSoft Configuration files
+#Author        :JR Bing
+#==============================================================================
+
+###############################
+# Source the function libraries
+###############################
+
+BASEDIR=$(dirname $0)
+source $BASEDIR/../lib/libpscfg.sh
+
+case $1 in
+
+  (help)
+    printHelp
+  ;;
+
+  (version)
+    printVersion
+  ;;
+
+  (list)
+    # List all environment configuration files
+  ;;
+
+  (edit)
+    # Edit environment configuration files
+  ;;
+
+  (create)
+    # Create environment configuration files
+  ;;
+
+  (toggle)
+    # Toggle configuration settings
+  ;;
+
+esac
