@@ -6,13 +6,7 @@
 #####################
 
 printSparkyVersion () {
-cat <<- EOF
-
-  PS-SPARKY
-
-  Version: 1.0.0
-
-EOF
+  cat $BASEDIR/../VERSION
 }
 
 ####################
@@ -33,19 +27,6 @@ cat <<- EOF
     version     Displays the current version of Sparky
     update      Downloads and installs the most recent version of Sparky
     help        Displays the help menu
-
-EOF
-}
-
-# Prints the help documentation for the "update" command
-printUpdateHelp () {
-cat <<- EOF
-
-  Usage:
-  sparky update
-
-  Description:
-  Downloads and installs the latest version of Sparky
 
 EOF
 }
@@ -73,7 +54,7 @@ updateSparky () {
 
   # Pull down files from github
   log "Downloading newest version from Github"
-  cd ~ && \
+  cd $HOME && \
   /usr/bin/env rm -rf /tmp/ps-sparky* && \
   /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/ps-admin/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
   /usr/bin/env gunzip -vf /tmp/ps-sparky.tar.gz && \

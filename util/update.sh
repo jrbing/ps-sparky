@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Update script for ps-sparky
 
 ##############################
 # Fix for invalid certificates

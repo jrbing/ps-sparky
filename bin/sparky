@@ -34,5 +34,4 @@ case $1 in
     printHelp
   ;;
 
-
 esac

@@ -38,10 +38,10 @@ contains_environment () {
   local n=$#
   local value=${!n}
   for ((i=1; i < $#; i++)) {
-      if [ "${!i}" == "${value}" ]; then
-          echo "y"
-          return 0
-      fi
+    if [[ "${!i}" == "${value}" ]]; then
+      echo "y"
+      return 0
+    fi
   }
   echo "n"
   return 1
@@ -114,4 +114,3 @@ set_path () {
   [[ $ORACLE_HOME ]] && export PATH=$ORACLE_HOME/bin:$PATH
   [[ $AGENT_HOME ]] && export PATH=$AGENT_HOME/bin:$PATH
 }
-

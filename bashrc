@@ -2,14 +2,15 @@
 # ps-sparky bash preferences file
 # --DO NOT MODIFY--
 # This file is overwritten whenever an update is applied
-# Please make changes to the ~/.localrc file instead
+# Please make changes to the ~/.sparkyrc file instead
 
 ###############
 # Initial Setup
 ###############
 export PS1='\e[0;34m[${PS_ENV:-"NOENV"} | \u@\h \W]\$ \e[m' # Set the prompt
 export SPHOME="$HOME/.ps-sparky"                            # Set the SPHOME
-export PATH=$PATH:$SPHOME/bin
+export PATH=$SPHOME/bin:$PATH
+export PS_ENV_HOME=$HOME/.environments
 
 #######
 # Fixes
@@ -20,14 +21,9 @@ export PMID=$(hostname) # Export the PMID in order to resolve an issue that Tuxe
 # Aliases
 #########
 alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executable
-alias update-sparky='($HOME/.ps-sparky/util/update.sh)'   # Update sparky from github
 alias psenv='source psenv'
 
-#################
-# Source .localrc
-#################
-if [[ -f ~/.localrc ]]; then
-  . ~/.localrc
-#else
-  #printf ".localrc file not found in home directory\n"
-fi
+##################
+# Source .sparkyrc
+##################
+[[ -f $HOME/.sparkyrc ]] && source $HOME/.sparkyrc

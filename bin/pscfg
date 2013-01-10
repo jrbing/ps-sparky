@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #Title         :pscfg
-#Description   :Utility script for modifying PeopleSoft Configuration files
+#Description   :Utility script for modifying Sparky Configuration files
 #Author        :JR Bing
 #==============================================================================
 
@@ -12,6 +12,8 @@ BASEDIR=$(dirname $0)
 source $BASEDIR/../lib/libutil.sh
 source $BASEDIR/../lib/libpscfg.sh
 
+checkForEnvironmentDir
+
 #############################
 # Parse the command arguments
 #############################
@@ -22,45 +24,59 @@ case $1 in
     printHelp
   ;;
 
-  (version)
-    printVersion
-  ;;
-
   (list)
     listEnvironments
   ;;
 
-  (show)
-    showPsftVars
-  ;;
-
   (create)
-    createEnvironment $2
+    if [[ $2 ]]; then
+      createEnvironment $2
+    else
+      log "Additional parameters required"
+      printCreateHelp
+    fi
   ;;
 
   (edit)
-    # Edit environment configuration file
-    editEnvironment $2
+    if [[ $2 ]]; then
+      editEnvironment $2
+    else
+      log "Additional parameters required"
+      printEditHelp
+    fi
   ;;
 
   (delete)
-    # Delete environment configuration file
-    deleteEnvironment $2
+    if [[ $2 ]]; then
+      deleteEnvironment $2
+    else
+      log "Additional parameters required"
+      printDeleteHelp
+    fi
   ;;
 
   (copy)
-    # Delete environment configuration file
-    copyEnvironment $2 $3
+    if [[ $2 && $3 ]]; then
+      copyEnvironment $2 $3
+    else
+      log "Additional parameters required"
+      printCopyHelp
+    fi
   ;;
 
-  (toggle)
+  #(show)
+    #showPsftVars
+  #;;
+
+
+  #(toggle)
     # Toggle configuration settings
-  ;;
+  #;;
 
-  (doctor)
+  #(doctor)
     # Validate current environment settings
-    runHealthCheck
-  ;;
+    #runCheckup
+  #;;
 
   (*)
     printHelp

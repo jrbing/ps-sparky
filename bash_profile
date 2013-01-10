@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# ps-sparky settings file
-# DO NOT MODIFY:  update .localrc if necessary
+# ps-sparky managed file
+# DO NOT MODIFY:  update .sparkyrc if necessary
 
 ###############
 # Source bashrc
 ###############
 
-if [[ -f ~/.bashrc ]]; then
-  . ~/.bashrc
+if [[ -f $HOME/.bashrc ]]; then
+  source $HOME/.bashrc
 fi
 

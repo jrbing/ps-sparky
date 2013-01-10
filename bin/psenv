@@ -5,7 +5,6 @@
 #Author        :JR Bing
 #==============================================================================
 
-PS_ENV_HOME=$HOME/environments
 PSENV_LIBDIR=$SPHOME/lib
 source $PSENV_LIBDIR/libpsenv.sh
 
@@ -24,13 +23,6 @@ do
   case $1 in
     -h | --help | -\?)
       print_help
-      break
-      ;;
-    -l | --list)
-      printf "Environment files: \n" >&2
-      for i in "${ENV_FILES[@]}"; do
-        printf "$i\n"
-      done
       break
       ;;
     -v | --verbose)
@@ -63,7 +55,7 @@ do
               set_library_path                         # Set the LD_LIBRARY_PATH
               set_path                                 # Set the PATH
             else
-              printf "[PSENV]: Environment file for $1 not found\n"
+              printf "[PSENV]: Environment file for $1 not found\n" >&2
           fi
       fi
       break
@@ -71,3 +63,5 @@ do
   esac
 done
 
+#TODO:  fix this so that it exits if no argument is specified
+#TODO:  allow a flag to be set that defaults the environment file

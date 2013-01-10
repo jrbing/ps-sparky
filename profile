@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-# ps-sparky settings file
-# DO NOT MODIFY:  update .localrc if necessary
+# ps-sparky managed file
+# DO NOT MODIFY:  update .sparkyrc if necessary
 
 #####################
 # Source bash_profile
