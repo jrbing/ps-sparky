@@ -23,26 +23,11 @@ alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executa
 alias update-sparky='($HOME/.ps-sparky/util/update.sh)'   # Update sparky from github
 alias psenv='source psenv'
 
-######################
-# OS Specific Settings
-######################
-case $(uname -s) in
-  (Linux*)
-    # TBD: Linux specific settings
-  ;;
-  (SunOS*)
-    # TBD: Solaris specific settings
-  ;;
-  (CYGWIN*)
-    # TBD: Cygwin specific settings
-  ;;
-esac
-
 #################
 # Source .localrc
 #################
 if [[ -f ~/.localrc ]]; then
   . ~/.localrc
-else
-  printf ".localrc file not found in home directory\n"
+#else
+  #printf ".localrc file not found in home directory\n"
 fi
