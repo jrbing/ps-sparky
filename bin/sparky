@@ -9,42 +9,30 @@
 ###############################
 
 BASEDIR=$(dirname $0)
+source $BASEDIR/../lib/libutil.sh
 source $BASEDIR/../lib/libsparky.sh
+
+#############################
+# Parse the command arguments
+#############################
 
 case $1 in
 
   (help)
-    # Print help
+    printHelp
   ;;
 
   (update)
-    # Updates sparky
+    updateSparky
   ;;
 
   (version)
-    # Prints the current version of sparky
+    printSparkyVersion
   ;;
 
-  (get)
-    # Downloads various installation files for PeopleSoft
-    case $2 in
-      (peopletools)
-        # Download a specific peopletools version
-      ;;
-      (weblogic)
-        # Download weblogic
-      ;;
-      (tuxedo)
-        # Download tuxedo
-      ;;
-      (jrockit)
-        # Download jrockit
-      ;;
-      (verity)
-        # Download verity
-      ;;
-    esac
-
+  (*)
+    printHelp
   ;;
+
 
 esac
