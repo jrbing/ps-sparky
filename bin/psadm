@@ -9,8 +9,8 @@
 ###############################
 
 BASEDIR=$(dirname $0)
-. $BASEDIR/../lib/libpsadm.sh
-. $BASEDIR/../lib/libpsadmin.sh
+source $BASEDIR/../lib/libutil.sh
+source $BASEDIR/../lib/libpsadm.sh
 
 ############
 # Validation
