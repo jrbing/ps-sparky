@@ -9,7 +9,12 @@
 ###############################
 
 BASEDIR=$(dirname $0)
+source $BASEDIR/../lib/libutil.sh
 source $BASEDIR/../lib/libpscfg.sh
+
+#############################
+# Parse the command arguments
+#############################
 
 case $1 in
 
@@ -22,19 +27,43 @@ case $1 in
   ;;
 
   (list)
-    # List all environment configuration files
+    listEnvironments
   ;;
 
-  (edit)
-    # Edit environment configuration files
+  (show)
+    showPsftVars
   ;;
 
   (create)
-    # Create environment configuration files
+    createEnvironment $2
+  ;;
+
+  (edit)
+    # Edit environment configuration file
+    editEnvironment $2
+  ;;
+
+  (delete)
+    # Delete environment configuration file
+    deleteEnvironment $2
+  ;;
+
+  (copy)
+    # Delete environment configuration file
+    copyEnvironment $2 $3
   ;;
 
   (toggle)
     # Toggle configuration settings
+  ;;
+
+  (doctor)
+    # Validate current environment settings
+    runHealthCheck
+  ;;
+
+  (*)
+    printHelp
   ;;
 
 esac
