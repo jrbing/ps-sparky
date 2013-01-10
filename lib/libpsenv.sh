@@ -54,7 +54,7 @@ load_environment_list () {
 
 check_for_environment_dir () {
   if [ -d $PS_ENV_HOME ]; then
-    log "Loading environments..."
+    log "Loading environments"
     load_environment_list
   else
     mkdir $PS_ENV_HOME && cp $SPHOME/sample.psenv $PS_ENV_HOME/
@@ -68,19 +68,19 @@ check_for_environment_dir () {
 #############################
 
 environment_reset () {
-  log "Resetting environment variables..."
+  log "Resetting environment variables"
   unset IS_PS_PLT
   unset PATH
   unset LD_LIBRARY_PATH
 }
 
 restore_library_path () {
-  log "Restoring LD_LIBRARY_PATH..."
+  log "Restoring LD_LIBRARY_PATH"
   export LD_LIBRARY_PATH=$ORIGINAL_LD_LIBRARY_PATH
 }
 
 restore_path () {
-  log "Restoring PATH..."
+  log "Restoring PATH"
   export PATH=$ORIGINAL_PATH
 }
 
@@ -89,17 +89,17 @@ restore_path () {
 ##############################
 
 source_env_file () {
-  log "Sourcing the environment file..."
+  log "Sourcing the environment file"
   source $PS_ENV_HOME/$1.psenv
 }
 
 source_psconfig () {
-  log "Sourcing the psconfig.sh file..."
+  log "Sourcing the psconfig.sh file"
   [[ $CYGWIN ]] || source $PS_HOME/psconfig.sh # Source psconfig.sh
 }
 
 set_library_path () {
-  log "Updating LD_LIBRARY_PATH..."
+  log "Updating LD_LIBRARY_PATH"
   export LD_LIBRARY_PATH=$TUXDIR/lib:$LD_LIBRARY_PATH
   [[ $JAVA_HOME ]] && export LD_LIBRARY_PATH=$JAVA_HOME/lib:$LD_LIBRARY_PATH
   [[ $COBDIR ]] && export LD_LIBRARY_PATH=$COBDIR/lib:$LD_LIBRARY_PATH
@@ -107,7 +107,7 @@ set_library_path () {
 }
 
 set_path () {
-  log "Updating PATH..."
+  log "Updating PATH"
   export PATH=$PATH:.
   export PATH=$TUXDIR/bin:$PATH
   [[ $COBDIR ]] && export PATH=$COBDIR/bin:$PATH
