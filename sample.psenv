@@ -13,18 +13,20 @@ export PS_HOME="/path/to/PS_HOME"
 export PS_CFG_HOME="/path/to/PS_CFG_HOME"
 export PS_APP_HOME="/path/to/PS_APP_HOME"
 export PS_PIA_HOME="/path/to/PS_PIA_HOME"
+export PS_CUST_HOME="/path/to/PS_CUST_HOME"
 export TUXDIR="/path/to/tuxedo/installation"
 
 # ----- 3rd Party Tools -----
 #export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic
 #export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
 
-# ----- PSADM -----
-# - Change the following to
-# - use with the psadm script
+# ----- Environment Setup -----
+# - These are used by the sparky utility scripts
+# - and are required in order to use psadm, psenv, and pscfg.
 export PS_APP_DOMAIN="hrdmo"
 export PS_PRCS_DOMAIN="hrdmo"
 export PS_PIA_DOMAIN="peoplesoft"
+export PS_PIA_SITE="hrdmo"
 
 ##########
 # Optional
