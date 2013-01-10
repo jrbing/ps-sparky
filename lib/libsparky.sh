@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 # Library file for sparky script
 
+#####################
+# Version Information
+#####################
+
+printSparkyVersion () {
+cat <<- EOF
+
+  PS-SPARKY
+
+  Version: 1.0.0
+
+EOF
+}
+
 ####################
 # Help Documentation
 ####################
@@ -12,25 +26,61 @@ cat <<- EOF
   # SPARKY #
 
   Description:
-    sparky is a utility script that acts as a cli front end for configuration
-    executables and files
+    The sparky script provides commands for displaying information about and
+    managing your ps-sparky installation
 
   Commands:
+    version     Displays the current version of Sparky
+    update      Downloads and installs the most recent version of Sparky
     help        Displays the help menu
 
 EOF
 }
 
-# Prints the help documentation for the "status" command
+# Prints the help documentation for the "update" command
 printUpdateHelp () {
 cat <<- EOF
 
   Usage:
-  sparky status [ app web prcs agent all ]
+  sparky update
 
   Description:
-  Shows the status of the server process specified in the argument
+  Downloads and installs the latest version of Sparky
 
 EOF
 }
 
+#########
+# Utility
+#########
+
+log () {
+  printf "\n\e[00;31m[SPARKY]: $1\e[00m\n" >&2
+}
+
+updateSparky () {
+  log "Updating Sparky"
+
+  # Fix for invalid certificates
+  # Remove the temporary curl cert bundle if it exists
+  if [[ -f /tmp/curl-ca-bundle-new.crt  ]]; then
+    rm /tmp/curl-ca-bundle-new.crt
+  fi
+
+  # Download the appropriate root certificates from Digicert
+  /usr/bin/env curl -sSfL https://www.digicert.com/testroot/DigiCertHighAssuranceEVRootCA.crt >> /tmp/curl-ca-bundle-new.crt
+  /usr/bin/env curl -sSfL https://www.digicert.com/CACerts/DigiCertHighAssuranceEVCA-1.crt >> /tmp/curl-ca-bundle-new.crt
+
+  # Pull down files from github
+  log "Downloading newest version from Github"
+  cd ~ && \
+  /usr/bin/env rm -rf /tmp/ps-sparky* && \
+  /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/ps-admin/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
+  /usr/bin/env gunzip -vf /tmp/ps-sparky.tar.gz && \
+  /usr/bin/env tar -xvf /tmp/ps-sparky.tar && \
+  /usr/bin/env cp -rf ps-admin-ps-sparky-???????/* .ps-sparky/
+
+  # Remove temporary files
+  log "Cleaning up"
+  /usr/bin/env rm -rf ps-admin-ps-sparky-???????/
+}
