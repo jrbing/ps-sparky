@@ -15,9 +15,9 @@ source $PSENV_LIBDIR/libpsenv.sh
 
 check_for_environment_dir
 
-########################################
-# Parse any options passed to the script
-########################################
+#############################
+# Parse the command arguments
+#############################
 
 while :
 do
