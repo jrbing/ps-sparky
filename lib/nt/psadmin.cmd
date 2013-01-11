@@ -8,4 +8,8 @@ set COMMAND=%5
 set SERVER_DOMAIN=%6
 
 cd %PS_HOME%\appserv
-psadmin -%SERVER_TYPE% %COMMAND% -d %SERVER_DOMAIN%
+REM /B = background
+REM /I = the new environment will be the original environment, and not the one
+REM      passed to cmd.exe
+START /B /I psadmin -%SERVER_TYPE% %COMMAND% -d %SERVER_DOMAIN%
+exit
