@@ -16,7 +16,6 @@ cat <<- EOF
 
   Commands:
     list        List environment configuration files
-    show        Show environment information
     create      Create environment configuration file
     edit        Edit specified environment configuration file
     delete      Delete specified environment configuration file
