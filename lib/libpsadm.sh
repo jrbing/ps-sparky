@@ -156,6 +156,8 @@ psadminEXEcute () {
   local command=$2
   local server_domain=$3
 
+  # TODO: figure out why the script isn't returning control after being
+  #       executed
   case $(uname -s) in
     (CYGWIN*)
       $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
