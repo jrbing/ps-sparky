@@ -22,11 +22,10 @@ export TUXDIR="/path/to/tuxedo/installation"
 
 # ----- Environment Setup -----
 # - These are used by the sparky utility scripts
-# - and are required in order to use psadm, psenv, and pscfg.
+# - and are required in order to use psadm, psenv, and pscfg
 export PS_APP_DOMAIN="hrdmo"
 export PS_PRCS_DOMAIN="hrdmo"
 export PS_PIA_DOMAIN="peoplesoft"
-export PS_PIA_SITE="hrdmo"
 
 ##########
 # Optional

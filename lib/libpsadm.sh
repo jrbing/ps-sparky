@@ -143,7 +143,7 @@ EOF
 #########
 
 log () {
-  printf "\n\e[00;31m[PSADM]: $1\e[00m\n" >&2
+  printf "\e[00;31m[PSADM]: $1\e[00m\n" >&2
 }
 
 psadminEXE () {
@@ -157,7 +157,7 @@ psadminEXEcute () {
   local server_domain=$3
 
   # TODO: figure out why the script isn't returning control after being
-  #       executed
+  #       executed under windows
   case $(uname -s) in
     (CYGWIN*)
       $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
