@@ -446,7 +446,7 @@ showWebserverStatus () {
 purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
   log "INFO - Purging webserver cache for domain $PS_PIA_DOMAIN"
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/$PS_PIA_DOMAIN/cache
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/*/cache
 }
 
 # Stop, clear the cache, and start the webserver

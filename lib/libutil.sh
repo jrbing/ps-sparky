@@ -69,24 +69,28 @@ deleteFile () {
 
 # Delete the specified directory recursively
 deleteDir () {
-  local dir_path=$1
-  if [ -d ${dir_path} ]; then
-    log "INFO - Deleting directory ${dir_path}"
-    rm -rf $dir_path
-  else
-    log "INFO - $dir_path not found"
-  fi
+  local dir_paths=$@
+  for dir in $dir_paths; do
+    if [ -d ${dir} ]; then
+      log "INFO - Deleting directory ${dir}"
+      rm -rfv $dir
+    else
+      log "INFO - $dir not found"
+    fi
+  done
 }
 
-# Delete the specified directory's contents
+# Delete the content of the specified directories
 deleteDirContents () {
-  local dir_path=$1
-  if [ -d ${dir_path} ]; then
-    log "INFO - Deleting contents of ${dir_path}"
-    rm -rf $dir_path/*
-  else
-    log "INFO - $dir_path not found"
-  fi
+  local dir_paths=$@
+  for dir in $dir_paths; do
+    if [ -d ${dir} ]; then
+      log "INFO - Deleting contents of ${dir}"
+      rm -rfv $dir/*
+    else
+      log "INFO - $dir not found"
+    fi
+  done
 }
 
 ###############
