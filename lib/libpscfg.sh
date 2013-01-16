@@ -86,8 +86,8 @@ cat <<- EOF
   pscfg copy "source" "target"
 
   Description:
-  Copies the specified environment file and opens the new file in the default
-  editor
+  Copies the specified environment file and opens the new file 
+  in the default editor
 
 EOF
 }
@@ -133,7 +133,6 @@ checkForEnvironmentDir () {
   fi
 }
 
-
 ######
 # List
 ######
@@ -147,18 +146,6 @@ listEnvironments () {
     counter=`expr $counter + 1`
   done
   printf "\n"
-}
-
-######
-# Show
-######
-
-# Displays PeopleSoft-specific environment variables
-showPsftVars () {
-  #TODO:  fix this abomination
-  for i in $ENV_VARS; do
-    printf $i is set to `printenv $i`
-  done
 }
 
 ########
@@ -190,7 +177,6 @@ editEnvironment () {
       log "Environment file for ${1} not found"
   fi
 }
-
 
 ########
 # Delete
@@ -232,9 +218,104 @@ copyEnvironment () {
 # Toggle
 ########
 
+######
+# Show
+######
+
+# Displays PeopleSoft-specific environment variables
+showPsftVars () {
+  #TODO:  fix this abomination
+  for i in $ENV_VARS; do
+    printf $i is set to `printenv $i`
+  done
+}
+
 ########
 # Doctor
 ########
+
+validatePSHOME () {
+  log "Validating PS_HOME"
+  if [[ $PS_HOME ]] && [[ -d $PS_HOME ]]; then
+    # Check to see if:
+    #  - peopletools.properties is setup
+    echo "Validate PSHOME setup"
+  else
+    # something
+    echo "No PSHOME setup"
+  fi
+}
+
+validatePSCFGHOME () {
+  echo "Validate PSCFGHOME setup"
+  # Check to see if:
+  #  - the directory structure appears correct
+}
+
+validatePSAPPHOME () {
+  echo "Validate PSAPPHOME setup"
+  # Check to see if:
+  #  - the directory structure appears correct
+}
+
+validatePSPIAHOME () {
+  echo "Validate PSPIAHOME setup"
+  # Check to see if:
+  #  - a webserver directory is set
+}
+
+validatePSCUSTHOME () {
+  echo "Validate PSCUSTHOME setup"
+  # Check to see if:
+  #  - dunnno
+}
+
+validateTUXDIR () {
+  echo "Validate TUXDIR setup"
+  # Check to see if:
+  #  - dunnno
+}
+
+validateJAVAHOME () {
+  echo "Validate PSPIAHOME setup"
+  # Check to see if the java executable exists
+}
+
+validateCOBDIR () {
+  echo "Validate COBDIR setup"
+  # Check to see if:
+  #  - COBOL binaries exist
+}
+
+validatePSAPPDOMAIN () {
+  echo "Validate PSAPPDOMAIN setup"
+  # Check to see if the domain folder exists
+}
+
+validatePSPRCSDOMAIN () {
+  echo "Validate PSAPPDOMAIN setup"
+  # Check to see if the domain folder exists
+}
+
+validatePSPIADOMAIN () {
+  echo "Validate PSPIADOMAIN setup"
+  # Check to see if the domain folder exists
+}
+
+validateORACLEHOME () {
+  echo "Validate ORACLE_HOME setup"
+  # Check to see if sqlplus is found
+}
+
+validateORACLEBASE () {
+  echo "Validate ORACLE_BASE setup"
+  # Check to see if...
+}
+
+validateAGENTHOME () {
+  echo "Validate AGENT_HOME setup"
+}
+
 runCheckup () {
   echo "Running Checkup"
 }
