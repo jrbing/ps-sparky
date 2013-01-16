@@ -15,7 +15,7 @@ cat <<- EOF
   # PSADM #
 
   Description:
-    psadm is a Utility script that acts as a wrapper for PeopleSoft
+    psadm is a utility script that acts as a wrapper for PeopleSoft
     executables and shell scripts
 
   Commands:
@@ -29,6 +29,7 @@ cat <<- EOF
     tail        Tail the logfile of a server process
     compile     Run the pscbl.mak script to compile cobol
     link        Run the psrun.mak script to link cobol
+    preload     Preload the appserver cache
     help        Displays the help menu
 
 EOF
@@ -192,6 +193,7 @@ stopAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Stopping application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown -d $PS_APP_DOMAIN
+  printBlankLine
 }
 
 #Shuts down the application server domain by using a forced shutdown method
@@ -199,6 +201,7 @@ killAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Killing application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown! -d $PS_APP_DOMAIN
+  printBlankLine
 }
 
 #Displays the processes that have been booted for the PSDMO domain
@@ -446,7 +449,7 @@ showWebserverStatus () {
 purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
   log "INFO - Purging webserver cache for domain $PS_PIA_DOMAIN"
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/*/cache
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL*/*/cache
 }
 
 # Stop, clear the cache, and start the webserver
@@ -532,14 +535,14 @@ tailEMAgent () {
 purgeEMHub () {
   checkVar "PS_HOME"
   log "INFO - Purging EMHub cache"
-  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat
-  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat
-  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies
-  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/environment
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/logs
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/PersistentStorage
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/scratchpad
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/transactions
+  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/state.dat
+  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/transhash.dat
+  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/proxies
+  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/environment
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/logs
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/PersistentStorage
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/scratchpad
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/transactions
 }
 
 # Restarts the emhub and purges the cache
