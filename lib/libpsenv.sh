@@ -12,10 +12,17 @@ cat <<- EOF
   # PSENV #
 
   Description:
-    psenv is a ...
+    psenv is a utility script used for sourcing Sparky
+    configuration files
 
-  Commands:
-    ...         ...
+  Usage:
+    psenv <environment settings>
+
+    ex: "psenv hrdmo"
+
+  Note:
+    Use "pscfg list" to display a list of available environment
+    settings
 
 EOF
 }
