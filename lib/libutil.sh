@@ -73,7 +73,7 @@ deleteDir () {
   for dir in $dir_paths; do
     if [ -d ${dir} ]; then
       log "INFO - Deleting directory ${dir}"
-      rm -rfv $dir
+      rm -rf $dir
     else
       log "INFO - $dir not found"
     fi
@@ -86,7 +86,7 @@ deleteDirContents () {
   for dir in $dir_paths; do
     if [ -d ${dir} ]; then
       log "INFO - Deleting contents of ${dir}"
-      rm -rfv $dir/*
+      rm -rf $dir/*
     else
       log "INFO - $dir not found"
     fi
