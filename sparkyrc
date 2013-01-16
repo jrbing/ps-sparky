@@ -19,5 +19,5 @@ export ORIGINAL_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 # Default PeopleSoft Environment
 ################################
 # Uncomment and update the following line if
-# you'd like to source a .psenv file upon login (ex: ". psenv hrdmo")
-#. psenv <change_to_name_of_environment>
+# you'd like to source a psenv environment upon login (ex: "psenv hrdmo")
+#psenv <change_to_name_of_environment>
