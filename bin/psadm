@@ -243,6 +243,10 @@ case $1 in
     linkCobol
   ;;
 
+  (preload)
+    preloadAppserverCache
+  ;;
+
   (*)
     printHelp
   ;;
