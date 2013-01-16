@@ -28,7 +28,7 @@ copySparkyRC () {
   fi
 
   echo "Copying sparkyrc"
-  cp ${INSTALL_DIR}/sparky $HOME/.sparkyrc
+  cp ${INSTALL_DIR}/sparkyrc $HOME/.sparkyrc
 }
 
 createEnvironmentsDirectory () {
