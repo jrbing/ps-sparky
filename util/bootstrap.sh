@@ -9,39 +9,38 @@ createSymlinks () {
   for i in ${LINKED_FILES[@]}
   do
     if [[ -f ~/.${i} ]] || [[ -h ~/.${i} ]]; then
-      echo "Found ~/.${i}... Backing up to ~/.${i}.old";
+      printf "[INFO] Found ~/.${i}... Backing up to ~/.${i}.old \n";
       cp $HOME/.${i} $HOME/.${i}.old;
       rm $HOME/.${i};
     fi
 
-    echo "Creating alias for ${i}"
+    printf "Creating alias for ${i} \n"
     ln -s ${INSTALL_DIR}/${i} $HOME/.${i}
   done
 }
 
 copySparkyRC () {
   if [[ -f $HOME/.sparkyrc ]] || [[ -h $HOME/.sparkyrc ]]; then
-    echo "Found directory ~/.sparkyrc" 
-    echo "Backing up to ~/.sparkyrc.old";
-    cp $HOME/.sparkyrc $HOME/.sparkyrc.old;
-    rm $HOME/.sparkyrc;
+    printf "[INFO] Found directory ~/.sparkyrc \n"
+    printf "[INFO] Backing up to ~/.sparkyrc.old \n"
+    cp $HOME/.sparkyrc $HOME/.sparkyrc.old
+    rm $HOME/.sparkyrc
   fi
 
-  echo "Copying sparkyrc"
+  printf "[INFO] Copying sparkyrc \n"
   cp ${INSTALL_DIR}/sparkyrc $HOME/.sparkyrc
 }
 
 createEnvironmentsDirectory () {
   if [[ -d $HOME/.environments ]] || [[ -h $HOME/.environments ]]; then
-    echo "Found ~/.environments folder"
-    echo "Backing up to ~/.environments-old";
-    cp $HOME/.environments $HOME/.environments-old;
+    printf "[INFO] Found ~/.environments folder \n"
+    printf "[INFO] Backing up to ~/.environments-old \n"
+    cp $HOME/.environments $HOME/.environments-old
     rm -rf $HOME/.environments;
   fi
 
-  echo "Creating environments folder"
+  printf "[INFO] Creating environments folder \n"
   mkdir $PS_ENV_HOME
-  #cp ${INSTALL_DIR}/sample.psenv $PS_ENV_HOME/
 }
 
 createSymlinks

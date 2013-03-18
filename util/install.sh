@@ -18,7 +18,7 @@ fi
 # Install Sparky
 ################
 
-printf "Downloading ps-sparky from github:\n"
+printf "[INFO] Downloading ps-sparky from github\n"
 cd ~ && \
 mkdir .ps-sparky && \
 /usr/bin/env rm -rf /tmp/ps-sparky* && \
@@ -27,9 +27,9 @@ mkdir .ps-sparky && \
 /usr/bin/env tar -xvf /tmp/ps-sparky.tar && \
 /usr/bin/env cp -rf ps-admin-ps-sparky-???????/* .ps-sparky/
 
-printf "Cleaning up..."
+printf "[INFO] Cleaning up temporary files"
 cd ~
 rm -rf ps-admin-ps-sparky-???????/
 
-printf "Running bootstrap script..."
+printf "[INFO] Running installation bootstrap script"
 ./.ps-sparky/util/bootstrap.sh
