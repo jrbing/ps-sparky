@@ -27,3 +27,8 @@ alias psenv='source psenv'
 # Source .sparkyrc
 ##################
 [[ -f $HOME/.sparkyrc ]] && source $HOME/.sparkyrc
+
+#########################################
+# Source the default environment settings
+#########################################
+[[ -f $HOME/.environments/default.psenv ]] && psenv default

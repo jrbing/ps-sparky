@@ -37,6 +37,13 @@ log () {
   fi
 }
 
+create_default_symlink () {
+  if [[ $DEFAULT ]]; then
+    printf "[PSENV]: Setting default environment settings to $1 \n" >&2
+    ln -fs $PS_ENV_HOME/$1.psenv $PS_ENV_HOME/default.psenv
+  fi
+}
+
 ############
 # Validation
 ############
