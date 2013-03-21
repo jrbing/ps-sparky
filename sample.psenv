@@ -21,11 +21,12 @@ export TUXDIR="/path/to/tuxedo/installation"
 #export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
 
 # ----- Environment Setup -----
-# - These are used by the sparky utility scripts
-# - and are required in order to use psadm, psenv, and pscfg
+# - These are used by the Sparky utility scripts
+# - and are required in by psadm, psenv, and pscfg
 export PS_APP_DOMAIN="hrdmo"
 export PS_PRCS_DOMAIN="hrdmo"
 export PS_PIA_DOMAIN="peoplesoft"
+export PS_PIA_SITE="hrdmo"
 
 ##########
 # Optional

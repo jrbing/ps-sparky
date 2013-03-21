@@ -23,13 +23,13 @@ cat <<- EOF
     stop        Stop a server process
     status      Show the status of a server process
     bounce      Restart a server process
-    show        Show environment variable information
     purge       Delete cached files for a server process
     watch       Monitor the status of a server process
     tail        Tail the logfile of a server process
     compile     Run the pscbl.mak script to compile cobol
     link        Run the psrun.mak script to link cobol
     preload     Preload the appserver cache
+    edit        Edit a server config file
     help        Displays the help menu
 
 EOF
@@ -139,6 +139,19 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "edit" command
+printEditHelp () {
+cat <<- EOF
+
+  Usage:
+  psadm edit [ app prcs web agent ]
+
+  Description:
+  Opens the configuration file for the specified service in the default editor
+
+EOF
+}
+
 #########
 # Utility
 #########
@@ -167,6 +180,15 @@ psadminEXEcute () {
       cd $PS_HOME/appserv
       psadmin -$server_type $command -d $server_domain
     ;;
+  esac
+}
+
+bouncePrompt () {
+  read -p "Restart the service (y/n)?" choice
+  case "$choice" in 
+    y|Y ) return 0;;
+    n|N ) return 1;;
+    * ) return 1;;
   esac
 }
 
@@ -324,6 +346,16 @@ tailAppserver () {
   multiTail $app_log_file $tux_log_file
 }
 
+#Open the appserver configuration file in the default editor
+editAppserver () {
+  checkVar "PS_CFG_HOME"
+  checkVar "PS_APP_DOMAIN"
+  checkVar "EDITOR"
+  local app_config_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/psappsrv.cfg
+  log "Opening ${app_config_file}"
+  $EDITOR $app_config_file && bouncePrompt && bounceAppserver
+}
+
 ###################
 # Process Scheduler
 ###################
@@ -404,6 +436,16 @@ tailProcessScheduler () {
   multiTail $prcs_log_file $tux_log_file
 }
 
+#Open the process scheduler configuration file in the default editor
+editProcessScheduler () {
+  checkVar "PS_CFG_HOME"
+  checkVar "PS_PRCS_DOMAIN"
+  checkVar "EDITOR"
+  local prcs_config_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/psprcs.cfg
+  log "Opening ${prcs_config_file}"
+  $EDITOR $prcs_config_file && bouncePrompt && bounceProcessScheduler
+}
+
 ###########
 # Webserver
 ###########
@@ -468,6 +510,17 @@ tailWebserver () {
   multiTail $pia_stdout_log $pia_stderr_log $pia_weblogic_log
 }
 
+#Open the process scheduler configuration file in the default editor
+editWebserver () {
+  checkVar "PS_PIA_HOME"
+  checkVar "PS_PIA_DOMAIN"
+  checkVar "PS_PIA_SITE"
+  checkVar "EDITOR"
+  local pia_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/WEB-INF/psftdocs/$PS_PIA_SITE/configuration.properties
+  log "Opening ${pia_config_file}"
+  $EDITOR $pia_config_file && bouncePrompt && bounceWebserver
+}
+
 ##############################
 # Environment Management Agent
 ##############################
@@ -524,6 +577,15 @@ tailEMAgent () {
   checkVar "PS_HOME"
   local agent_log=$PS_HOME/PSEMAgent/envmetadata/logs/emf.log
   multiTail $agent_log
+}
+
+#Open the process scheduler configuration file in the default editor
+editEMAgent () {
+  checkVar "PS_HOME"
+  checkVar "EDITOR"
+  local agent_config_file=$PS_HOME/PSEMAgent/envmetadata/config/configuration.properties
+  log "Opening ${agent_config_file}"
+  $EDITOR $agent_config_file && bouncePrompt && bounceEMAgent
 }
 
 

@@ -157,17 +157,6 @@ case $1 in
     esac
   ;;
 
-  (show)
-    case $2 in
-      (vars)
-        showPsftVars
-      ;;
-      (*)
-        printShowHelp
-      ;;
-    esac
-  ;;
-
   (purge)
     case $2 in
       (agent)
@@ -245,6 +234,26 @@ case $1 in
 
   (preload)
     preloadAppserverCache
+  ;;
+
+  (edit)
+    case $2 in
+      (app)
+        editAppserver
+      ;;
+      (web)
+        editWebserver
+      ;;
+      (prcs)
+        editProcessScheduler
+      ;;
+      (agent)
+        editEMAgent
+      ;;
+      (*)
+        printEditHelp
+      ;;
+    esac
   ;;
 
   (*)
