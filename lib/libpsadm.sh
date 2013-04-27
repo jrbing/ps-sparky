@@ -144,7 +144,7 @@ printEditHelp () {
 cat <<- EOF
 
   Usage:
-  psadm edit [ app prcs web agent ]
+  psadm edit [ app prcs web agent ig ]
 
   Description:
   Opens the configuration file for the specified service in the default editor
@@ -510,7 +510,7 @@ tailWebserver () {
   multiTail $pia_stdout_log $pia_stderr_log $pia_weblogic_log
 }
 
-#Open the process scheduler configuration file in the default editor
+#Open the webserver configuration file in the default editor
 editWebserver () {
   checkVar "PS_PIA_HOME"
   checkVar "PS_PIA_DOMAIN"
@@ -519,6 +519,16 @@ editWebserver () {
   local pia_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/WEB-INF/psftdocs/$PS_PIA_SITE/configuration.properties
   log "Opening ${pia_config_file}"
   $EDITOR $pia_config_file && bouncePrompt && bounceWebserver
+}
+
+#Open the integrationGateway.properties configuration file in the default editor
+editIntegrationGateway () {
+  checkVar "PS_PIA_HOME"
+  checkVar "PS_PIA_DOMAIN"
+  checkVar "EDITOR"
+  local ig_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSIGW.war/WEB-INF/integrationGateway.properties
+  log "Opening ${ig_config_file}"
+  $EDITOR $ig_config_file
 }
 
 ##############################
