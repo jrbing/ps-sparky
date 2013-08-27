@@ -168,6 +168,9 @@ case $1 in
       (web)
         purgeWebserverCache
       ;;
+      (prcs)
+        purgeProcessSchedulerCache
+      ;;
       (*)
         printPurgeHelp
       ;;
@@ -255,6 +258,30 @@ case $1 in
       ;;
       (*)
         printEditHelp
+      ;;
+    esac
+  ;;
+
+  (show)
+    case $2 in
+      (app)
+        # TODO:  insert functionality to show appserver specific settings or
+        # environment variables
+      ;;
+      (web)
+        # TODO:  insert functionality to show appserver specific settings or
+        # environment variables
+      ;;
+      (prcs)
+        # TODO:  insert functionality to show appserver specific settings or
+        # environment variables
+      ;;
+      (agent)
+        # TODO:  insert functionality to show emagent specific settings or
+        # environment variables
+      ;;
+      (*)
+        #printShowHelp
       ;;
     esac
   ;;

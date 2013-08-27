@@ -92,10 +92,10 @@ printPurgeHelp () {
 cat <<- EOF
 
   Usage:
-  psadm purge [ agent hub web ]
+  psadm purge [ agent hub web prcs ]
 
   Description:
-  Purges all cached files for the specified target
+  Purges all cache and log files for the specified target
 
 EOF
 }
@@ -184,7 +184,7 @@ psadminEXEcute () {
 }
 
 bouncePrompt () {
-  read -p "Restart the service (y/n)?" choice
+  read -p "Restart the service (y/n)? " choice
   case "$choice" in 
     y|Y ) return 0;;
     n|N ) return 1;;
@@ -407,10 +407,22 @@ flushProcessSchedulerIPC () {
   psadminEXEcute p cleanipc ${PS_PRCS_DOMAIN}
 }
 
+# Purge the process scheduler cache
+purgeProcessSchedulerCache () {
+  checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Purging process scheduler logs for domain $PS_PRCS_DOMAIN"
+  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS
+  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/log_output
+  deleteFile $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/ULOG.*
+  log "INFO - Purging process scheduler cache for domain $PS_PRCS_DOMAIN"
+  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/CACHE
+}
+
 #Stops, purges, reconfigures, and restarts the process scheduler server
 bounceProcessScheduler () {
   stopProcessScheduler
   flushProcessSchedulerIPC
+  purgeProcessSchedulerCache
   configProcessScheduler
   startProcessScheduler
 }
