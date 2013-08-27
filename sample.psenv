@@ -16,10 +16,6 @@ export PS_PIA_HOME="/path/to/PS_PIA_HOME"
 export PS_CUST_HOME="/path/to/PS_CUST_HOME"
 export TUXDIR="/path/to/tuxedo/installation"
 
-# ----- 3rd Party Tools -----
-#export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic
-#export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
-
 # ----- Environment Setup -----
 # - These are used by the Sparky utility scripts
 # - and are required in by psadm, psenv, and pscfg
@@ -32,6 +28,10 @@ export PS_PIA_SITE="hrdmo"
 # Optional
 ##########
 
+# ----- 3rd Party Tools -----
+#export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic
+#export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
+
 # --------- Integration Broker --------
 #export PS_FILEDIR="/path/to/PS_FILEDIR"
 #export PS_SERVDIR="/path/to/PS_SERVDIR"
@@ -41,6 +41,7 @@ export PS_PIA_SITE="hrdmo"
 # - for use with Oracle
 #export ORACLE_HOME="/path/to/ORACLE_HOME"
 #export ORACLE_BASE="/path/to/ORACLE_BASE"
+#export TNS_ADMIN="/path/to/TNS_ADMIN"
 
 # ----- Oracle Enterprise Manager -----
 # - Uncomment and modify the following
