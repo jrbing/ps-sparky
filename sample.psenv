@@ -28,6 +28,13 @@ export PS_PIA_SITE="hrdmo"
 # Optional
 ##########
 
+# ----- Datamover -----
+#export DM_HOME=$HOME/PS_DM
+#export PS_DM_DATA_IN=$PS_HOME/data
+#export PS_DM_DATA_OUT=$DM_HOME/data
+#export PS_DM_SCRIPT=$PS_HOME/scripts
+#export PS_DM_LOG=$DM_HOME/log
+
 # ----- 3rd Party Tools -----
 #export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic
 #export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
