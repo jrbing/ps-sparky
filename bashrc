@@ -22,6 +22,7 @@ export PMID=$(hostname) # Export the PMID in order to resolve an issue that Tuxe
 #########
 alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executable
 alias psenv='source psenv'
+alias pscipher='$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/piabin/PSCipher.sh'
 
 ##################
 # Source .sparkyrc
