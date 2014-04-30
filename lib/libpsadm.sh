@@ -23,7 +23,7 @@ cat <<- EOF
     stop        Stop a server process
     status      Show the status of a server process
     bounce      Restart a server process
-    stop        Force shutdown of a server process
+    kill        Force shutdown of a server process
     purge       Delete cached files for a server process
     watch       Monitor the status of a server process
     tail        Tail the logfile of a server process
