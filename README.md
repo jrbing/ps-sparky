@@ -5,7 +5,7 @@ Sparky is a collection of tools to help bootstrap and manage a
 PeopleSoft Web, App, or Process Scheduler server running on Unix or
 Linux.  
 
-See the [ps-sparky site](http://psadm.in/projects/sparky "ps-sparky") for
+See the [ps-sparky site](http://jrbing.com/projects/sparky "ps-sparky") for
 more information.
 
 Contributing
@@ -17,7 +17,7 @@ License
 -------
 (The MIT License)
 
-Copyright (c) 2013 JR Bing
+Copyright (c) 2014 JR Bing
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
