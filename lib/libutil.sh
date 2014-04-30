@@ -22,7 +22,7 @@ printBlankLine () {
 }
 
 pause () {
-  sleep 5
+  sleep 2
 }
 
 #################################
@@ -69,24 +69,28 @@ deleteFile () {
 
 # Delete the specified directory recursively
 deleteDir () {
-  local dir_path=$1
-  if [ -d ${dir_path} ]; then
-    log "INFO - Deleting directory ${dir_path}"
-    rm -rf $dir_path
-  else
-    log "INFO - $dir_path not found"
-  fi
+  local dir_paths=$@
+  for dir in $dir_paths; do
+    if [ -d ${dir} ]; then
+      log "INFO - Deleting directory ${dir}"
+      rm -rf $dir
+    else
+      log "INFO - $dir not found"
+    fi
+  done
 }
 
-# Delete the specified directory's contents
+# Delete the content of the specified directories
 deleteDirContents () {
-  local dir_path=$1
-  if [ -d ${dir_path} ]; then
-    log "INFO - Deleting contents of ${dir_path}"
-    rm -rf $dir_path/*
-  else
-    log "INFO - $dir_path not found"
-  fi
+  local dir_paths=$@
+  for dir in $dir_paths; do
+    if [ -d ${dir} ]; then
+      log "INFO - Deleting contents of ${dir}"
+      rm -rf $dir/*
+    else
+      log "INFO - $dir not found"
+    fi
+  done
 }
 
 ###############
@@ -112,25 +116,9 @@ assignScriptExtension () {
 
 multiTail () {
   trap 'kill $(jobs -p)' EXIT
-  for file in "$@"
-  do
+  for file in "$@"; do
     log "INFO - Beginning tail of $file"
     tail -n 50 -f $file &
   done
   wait
 }
-
-spinner () {
-  local pid=$1
-  local delay=0.75
-  local spinstr='|/-\'
-  while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-    local temp=${spinstr#?}
-    printf " [%c]  " "$spinstr"
-    local spinstr=$temp${spinstr%"$temp"}
-    sleep $delay
-    printf "\b\b\b\b\b\b"
-  done
-  printf "    \b\b\b\b"
-}
-

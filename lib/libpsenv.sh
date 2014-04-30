@@ -12,10 +12,17 @@ cat <<- EOF
   # PSENV #
 
   Description:
-    psenv is a ...
+    psenv is a utility script used for sourcing Sparky
+    configuration files
 
-  Commands:
-    ...         ...
+  Usage:
+    psenv <environment settings>
+
+    ex: "psenv hrdmo"
+
+  Note:
+    Use "pscfg list" to display a list of available environment
+    settings
 
 EOF
 }
@@ -27,6 +34,13 @@ EOF
 log () {
   if [[ $VERBOSE ]]; then
     printf "[PSENV]: $1\n" >&2
+  fi
+}
+
+create_default_symlink () {
+  if [[ $DEFAULT ]]; then
+    printf "[PSENV]: Setting default environment settings to $1 \n" >&2
+    ln -fs $PS_ENV_HOME/$1.psenv $PS_ENV_HOME/default.psenv
   fi
 }
 

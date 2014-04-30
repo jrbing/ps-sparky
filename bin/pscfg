@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #Title         :pscfg
-#Description   :Utility script for modifying Sparky Configuration files
+#Description   :Utility script for modifying Sparky configuration files
 #Author        :JR Bing
 #==============================================================================
 
@@ -68,9 +68,12 @@ case $1 in
     #showPsftVars
   #;;
 
-
   #(toggle)
     # Toggle configuration settings
+  #;;
+
+  #(encrypt)
+    # encrypt web, app, prcs passwords
   #;;
 
   #(doctor)

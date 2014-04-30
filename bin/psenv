@@ -29,6 +29,10 @@ do
       VERBOSE=$((verbose+1))
       shift
       ;;
+    -d | --default)
+      DEFAULT=$((default+1))
+      shift
+      ;;
     --)
       shift
       break
@@ -47,6 +51,7 @@ do
         elif [[ "$BASH_SOURCE" != "$0" ]]; then
           if [ $(contains_environment "${ENV_FILES[@]}" $1) == "y" ]; then
               log "Environment file for $1 found"
+              create_default_symlink $1                # Create a symlink to default the specified environment
               environment_reset                        # Reset the impacted environment variables
               restore_library_path                     # Change the library path to it's previous setting
               restore_path                             # Change the path to it's previous setting

@@ -16,7 +16,7 @@ fi
 #############################
 # Pull down files from github
 #############################
-printf "Updating ps-sparky from github:\n"
+printf "[INFO] Updating ps-sparky\n"
 cd ~ && \
 /usr/bin/env rm -rf /tmp/ps-sparky* && \
 /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/ps-admin/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
@@ -27,5 +27,5 @@ cd ~ && \
 ########################
 # Remove temporary files
 ########################
-printf "Cleaning up...\n"
+printf "[INFO] Cleaning up temporary files\n"
 /usr/bin/env rm -rf ps-admin-ps-sparky-???????/

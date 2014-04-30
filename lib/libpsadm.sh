@@ -15,7 +15,7 @@ cat <<- EOF
   # PSADM #
 
   Description:
-    psadm is a Utility script that acts as a wrapper for PeopleSoft
+    psadm is a utility script that acts as a wrapper for PeopleSoft
     executables and shell scripts
 
   Commands:
@@ -23,12 +23,14 @@ cat <<- EOF
     stop        Stop a server process
     status      Show the status of a server process
     bounce      Restart a server process
-    show        Show environment variable information
+    stop        Force shutdown of a server process
     purge       Delete cached files for a server process
     watch       Monitor the status of a server process
     tail        Tail the logfile of a server process
     compile     Run the pscbl.mak script to compile cobol
     link        Run the psrun.mak script to link cobol
+    preload     Preload the appserver cache
+    edit        Edit a server config file
     help        Displays the help menu
 
 EOF
@@ -73,6 +75,19 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "kill" command
+printKillHelp () {
+cat <<- EOF
+
+  Usage:
+  psadm kill [ app prcs ]
+
+  Description:
+  Force shutdown of the server process specified in the argument
+
+EOF
+}
+
 # Prints the help documentation for the "bounce" command
 printBounceHelp () {
 cat <<- EOF
@@ -91,10 +106,10 @@ printPurgeHelp () {
 cat <<- EOF
 
   Usage:
-  psadm purge [ agent hub web ]
+  psadm purge [ agent hub web prcs ]
 
   Description:
-  Purges all cached files for the specified target
+  Purges all cache and log files for the specified target
 
 EOF
 }
@@ -138,12 +153,25 @@ cat <<- EOF
 EOF
 }
 
+# Prints the help documentation for the "edit" command
+printEditHelp () {
+cat <<- EOF
+
+  Usage:
+  psadm edit [ app prcs web agent ig ]
+
+  Description:
+  Opens the configuration file for the specified service in the default editor
+
+EOF
+}
+
 #########
 # Utility
 #########
 
 log () {
-  printf "\n\e[00;31m[PSADM]: $1\e[00m\n" >&2
+  printf "\e[00;31m[PSADM]: $1\e[00m\n" >&2
 }
 
 psadminEXE () {
@@ -156,6 +184,8 @@ psadminEXEcute () {
   local command=$2
   local server_domain=$3
 
+  # TODO: figure out why the script isn't returning control after being
+  #       executed under CYGWIN
   case $(uname -s) in
     (CYGWIN*)
       $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
@@ -164,6 +194,15 @@ psadminEXEcute () {
       cd $PS_HOME/appserv
       psadmin -$server_type $command -d $server_domain
     ;;
+  esac
+}
+
+bouncePrompt () {
+  read -p "Restart the service (y/n)? " choice
+  case "$choice" in 
+    y|Y ) return 0;;
+    n|N ) return 1;;
+    * ) return 1;;
   esac
 }
 
@@ -190,6 +229,7 @@ stopAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Stopping application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown -d $PS_APP_DOMAIN
+  printBlankLine
 }
 
 #Shuts down the application server domain by using a forced shutdown method
@@ -197,6 +237,7 @@ killAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Killing application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown! -d $PS_APP_DOMAIN
+  printBlankLine
 }
 
 #Displays the processes that have been booted for the PSDMO domain
@@ -319,6 +360,16 @@ tailAppserver () {
   multiTail $app_log_file $tux_log_file
 }
 
+#Open the appserver configuration file in the default editor
+editAppserver () {
+  checkVar "PS_CFG_HOME"
+  checkVar "PS_APP_DOMAIN"
+  checkVar "EDITOR"
+  local app_config_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/psappsrv.cfg
+  log "Opening ${app_config_file}"
+  $EDITOR $app_config_file && bouncePrompt && bounceAppserver
+}
+
 ###################
 # Process Scheduler
 ###################
@@ -370,10 +421,22 @@ flushProcessSchedulerIPC () {
   psadminEXEcute p cleanipc ${PS_PRCS_DOMAIN}
 }
 
+# Purge the process scheduler cache
+purgeProcessSchedulerCache () {
+  checkVar "PS_PRCS_DOMAIN"
+  log "INFO - Purging process scheduler logs for domain $PS_PRCS_DOMAIN"
+  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS
+  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/log_output
+  deleteFile $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/ULOG.*
+  log "INFO - Purging process scheduler cache for domain $PS_PRCS_DOMAIN"
+  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/CACHE
+}
+
 #Stops, purges, reconfigures, and restarts the process scheduler server
 bounceProcessScheduler () {
   stopProcessScheduler
   flushProcessSchedulerIPC
+  purgeProcessSchedulerCache
   configProcessScheduler
   startProcessScheduler
 }
@@ -397,6 +460,16 @@ tailProcessScheduler () {
   local prcs_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/SCHDLR_`date +%m%d`.LOG
   local tux_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
   multiTail $prcs_log_file $tux_log_file
+}
+
+#Open the process scheduler configuration file in the default editor
+editProcessScheduler () {
+  checkVar "PS_CFG_HOME"
+  checkVar "PS_PRCS_DOMAIN"
+  checkVar "EDITOR"
+  local prcs_config_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/psprcs.cfg
+  log "Opening ${prcs_config_file}"
+  $EDITOR $prcs_config_file && bouncePrompt && bounceProcessScheduler
 }
 
 ###########
@@ -444,7 +517,7 @@ showWebserverStatus () {
 purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
   log "INFO - Purging webserver cache for domain $PS_PIA_DOMAIN"
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/$PS_PIA_DOMAIN/cache
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL*/*/cache
 }
 
 # Stop, clear the cache, and start the webserver
@@ -461,6 +534,27 @@ tailWebserver () {
   local pia_stderr_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stderr.log
   local pia_weblogic_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_weblogic.log
   multiTail $pia_stdout_log $pia_stderr_log $pia_weblogic_log
+}
+
+#Open the webserver configuration file in the default editor
+editWebserver () {
+  checkVar "PS_PIA_HOME"
+  checkVar "PS_PIA_DOMAIN"
+  checkVar "PS_PIA_SITE"
+  checkVar "EDITOR"
+  local pia_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/WEB-INF/psftdocs/$PS_PIA_SITE/configuration.properties
+  log "Opening ${pia_config_file}"
+  $EDITOR $pia_config_file && bouncePrompt && bounceWebserver
+}
+
+#Open the integrationGateway.properties configuration file in the default editor
+editIntegrationGateway () {
+  checkVar "PS_PIA_HOME"
+  checkVar "PS_PIA_DOMAIN"
+  checkVar "EDITOR"
+  local ig_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSIGW.war/WEB-INF/integrationGateway.properties
+  log "Opening ${ig_config_file}"
+  $EDITOR $ig_config_file
 }
 
 ##############################
@@ -521,6 +615,15 @@ tailEMAgent () {
   multiTail $agent_log
 }
 
+#Open the process scheduler configuration file in the default editor
+editEMAgent () {
+  checkVar "PS_HOME"
+  checkVar "EDITOR"
+  local agent_config_file=$PS_HOME/PSEMAgent/envmetadata/config/configuration.properties
+  log "Opening ${agent_config_file}"
+  $EDITOR $agent_config_file && bouncePrompt && bounceEMAgent
+}
+
 
 ############################
 # Environment Management Hub
@@ -530,14 +633,14 @@ tailEMAgent () {
 purgeEMHub () {
   checkVar "PS_HOME"
   log "INFO - Purging EMHub cache"
-  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat
-  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat
-  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies
-  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/environment
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/logs
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/PersistentStorage
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/scratchpad
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/transactions
+  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/state.dat
+  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/transhash.dat
+  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/proxies
+  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/environment
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/logs
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/PersistentStorage
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/scratchpad
+  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/transactions
 }
 
 # Restarts the emhub and purges the cache
