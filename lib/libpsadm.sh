@@ -23,6 +23,7 @@ cat <<- EOF
     stop        Stop a server process
     status      Show the status of a server process
     bounce      Restart a server process
+    stop        Force shutdown of a server process
     purge       Delete cached files for a server process
     watch       Monitor the status of a server process
     tail        Tail the logfile of a server process
@@ -70,6 +71,19 @@ cat <<- EOF
 
   Description:
   Stops the server process specified in the argument
+
+EOF
+}
+
+# Prints the help documentation for the "kill" command
+printKillHelp () {
+cat <<- EOF
+
+  Usage:
+  psadm kill [ app prcs ]
+
+  Description:
+  Force shutdown of the server process specified in the argument
 
 EOF
 }

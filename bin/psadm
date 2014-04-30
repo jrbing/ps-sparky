@@ -117,6 +117,20 @@ case $1 in
     esac
   ;;
 
+  (kill)
+    case $2 in
+      (app)
+        killAppserver
+      ;;
+      (prcs)
+        killProcessScheduler
+      ;;
+      (*)
+        printKillHelp
+      ;;
+    esac
+  ;;
+
   (bounce)
     case $2 in
       (app)
