@@ -106,7 +106,7 @@ printPurgeHelp () {
 cat <<- EOF
 
   Usage:
-  psadm purge [ agent hub web prcs ]
+  psadm purge [ app agent hub web prcs ]
 
   Description:
   Purges all cache and log files for the specified target
@@ -199,7 +199,7 @@ psadminEXEcute () {
 
 bouncePrompt () {
   read -p "Restart the service (y/n)? " choice
-  case "$choice" in 
+  case "$choice" in
     y|Y ) return 0;;
     n|N ) return 1;;
     * ) return 1;;
@@ -357,7 +357,8 @@ tailAppserver () {
   checkVar "PS_APP_DOMAIN"
   local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
   local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
-  multiTail $app_log_file $tux_log_file
+  local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
+  multiTail $app_log_file $tux_log_file $ren_log_file
 }
 
 #Open the appserver configuration file in the default editor

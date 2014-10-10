@@ -114,6 +114,7 @@ assignScriptExtension () {
   esac
 }
 
+# TODO: validate if file exists
 multiTail () {
   trap 'kill $(jobs -p)' EXIT
   for file in "$@"; do
