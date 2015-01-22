@@ -46,7 +46,7 @@ checkPsftVars () {
 
 # Check to see if the appropriate environment variable is set
 checkVar () {
-  if [[ `printenv ${1}` = '' ]]; then
+  if [[ $(printenv ${1}) = '' ]]; then
     log "ERROR - ${1} is not set.  You'll need to set this in your environment file."
     exit 1
   fi
@@ -69,11 +69,10 @@ deleteFile () {
 
 # Delete the specified directory recursively
 deleteDir () {
-  local dir_paths=$@
-  for dir in $dir_paths; do
-    if [ -d ${dir} ]; then
+  for dir in "$@"; do
+    if [[ -d ${dir} ]]; then
       log "INFO - Deleting directory ${dir}"
-      rm -rf $dir
+      rm -rf "$dir"
     else
       log "INFO - $dir not found"
     fi
@@ -82,11 +81,10 @@ deleteDir () {
 
 # Delete the content of the specified directories
 deleteDirContents () {
-  local dir_paths=$@
-  for dir in $dir_paths; do
-    if [ -d ${dir} ]; then
+  for dir in "$@"; do
+    if [[ -d ${dir} ]]; then
       log "INFO - Deleting contents of ${dir}"
-      rm -rf $dir/*
+      rm -rf "$dir"/*
     else
       log "INFO - $dir not found"
     fi
@@ -114,12 +112,13 @@ assignScriptExtension () {
   esac
 }
 
-# TODO: validate if file exists
 multiTail () {
   trap 'kill $(jobs -p)' EXIT
   for file in "$@"; do
-    log "INFO - Beginning tail of $file"
-    tail -n 50 -f $file &
+    if [[ -e $file ]]; then
+      log "INFO - Beginning tail of $file"
+      tail -n 50 -f "$file" | awk '{"date \"+%Y%m%d_%H%M%S\"" | getline now} {close("date")} {print now ": " $0}' &
+    fi
   done
   wait
 }
