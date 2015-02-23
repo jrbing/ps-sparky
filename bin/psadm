@@ -176,6 +176,10 @@ case $1 in
       (agent)
         purgeEMAgent
       ;;
+      (app)
+        flushAppserverIPC
+        purgeAppserverCache
+      ;;
       (hub)
         purgeEMHub
       ;;

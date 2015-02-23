@@ -36,7 +36,7 @@ export PS_PIA_SITE="hrdmo"
 #export PS_DM_LOG=$DM_HOME/log
 
 # ----- 3rd Party Tools -----
-#export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic
+#export JAVA_HOME="/path/to/java/installation"   # Uncomment if using Weblogic with jrockit
 #export COBDIR="/path/to/cobol/installation"     # Uncomment if using COBOL
 
 # --------- Integration Broker --------

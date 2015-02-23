@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
-# Library file for sparky script
+#===============================================================================
+# vim: softtabstop=4 shiftwidth=4 expandtab fenc=utf-8 spell spelllang=en
+#===============================================================================
+#
+#          FILE: libsparky.sh
+#
+#   DESCRIPTION: Library file for sparky script
+#
+#===============================================================================
 
 #####################
 # Version Information
 #####################
 
 printSparkyVersion () {
-  cat $BASEDIR/../VERSION
+  cat "$BASEDIR"/../VERSION
 }
 
 ####################
@@ -56,10 +64,10 @@ updateSparky () {
   log "Downloading newest version from Github"
   cd $HOME && \
   /usr/bin/env rm -rf /tmp/ps-sparky* && \
-  /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/ps-admin/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
+  /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/jrbing/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
   /usr/bin/env gunzip -vf /tmp/ps-sparky.tar.gz && \
   /usr/bin/env tar -xvf /tmp/ps-sparky.tar && \
-  /usr/bin/env cp -rf ps-admin-ps-sparky-???????/* .ps-sparky/
+  /usr/bin/env cp -rf jrbing-ps-sparky-???????/* .ps-sparky/
 
   # Remove temporary files
   log "Cleaning up"
