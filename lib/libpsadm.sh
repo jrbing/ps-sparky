@@ -457,7 +457,7 @@ watchProcessSchedulerStatus () {
 #Tail the process scheduler logs
 tailProcessScheduler () {
   checkVar "PS_HOME"
-  checkVar "PS_APP_DOMAIN"
+  checkVar "PS_PRCS_DOMAIN"
   local prcs_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/SCHDLR_`date +%m%d`.LOG
   local tux_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
   multiTail $prcs_log_file $tux_log_file
@@ -480,38 +480,19 @@ editProcessScheduler () {
 # Starts the webserver process
 startWebserver () {
   checkVar "PS_PIA_DOMAIN"
-  if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh ]; then
-    log "INFO - Starting webserver for domain $PS_PIA_DOMAIN"
-    $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/startPIA.sh
-  else
-    log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/startPIA.sh was not found"
-    exit 1
-  fi
+  psadminEXEcute w start ${PS_PIA_DOMAIN}
 }
 
 # Stop the webserver process
 stopWebserver () {
   checkVar "PS_PIA_DOMAIN"
-  if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh ]; then
-    log "INFO - Stopping webserver for domain $PS_PIA_DOMAIN"
-    $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/stopPIA.sh
-  else
-    log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/stopPIA.sh was not found"
-    exit 1
-  fi
+  psadminEXEcute w shutdown ${PS_PIA_DOMAIN}
 }
 
 # Shows the status of the webserver
 showWebserverStatus () {
   checkVar "PS_PIA_DOMAIN"
-  if [ -f $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/singleserverStatus.sh ]; then
-    printBanner "Web Server Status"
-    $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/bin/singleserverStatus.sh
-    printBlankLine
-  else
-    log "ERROR - The file ${PS_CFG_HOME}/webserv/${PS_PIA_DOMAIN}/bin/singleserverStatus.sh was not found"
-    exit 1
-  fi
+  psadminEXEcute w status ${PS_PIA_DOMAIN}
 }
 
 # Purge the webserver cache
