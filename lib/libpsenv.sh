@@ -109,7 +109,7 @@ source_env_file () {
 
 source_psconfig () {
   log "Sourcing the psconfig.sh file"
-  [[ $CYGWIN ]] || cd "$PS_HOME" && source "$PS_HOME"/psconfig.sh && cd - # Source psconfig.sh
+  [[ $CYGWIN ]] || cd "$PS_HOME" && source "$PS_HOME"/psconfig.sh && cd - > /dev/null 2>&1 # Source psconfig.sh
 }
 
 set_library_path () {
