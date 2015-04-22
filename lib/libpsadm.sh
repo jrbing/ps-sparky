@@ -355,14 +355,18 @@ watchAppserverQueueStatus () {
 tailAppserver () {
   checkVar "PS_HOME"
   checkVar "PS_APP_DOMAIN"
-  local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
-  local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
-  local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
-  local watch_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/WATCHSRV_`date +%m%d`.LOG
-  local monitor_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/MONITORSRV_`date +%m%d`.LOG
-  local analytic_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/ANALYTICSRV_`date +%m%d`.LOG
-  local stderr_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/stderr
-  multiTail $app_log_file $tux_log_file $ren_log_file $watch_log_file $monitor_log_file $analytic_log_file $stderr_log_file
+  if (hash lnav 2>/dev/null); then
+    lnav "$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS"
+  else
+    local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
+    local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
+    local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
+    local watch_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/WATCHSRV_`date +%m%d`.LOG
+    local monitor_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/MONITORSRV_`date +%m%d`.LOG
+    local analytic_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/ANALYTICSRV_`date +%m%d`.LOG
+    local stderr_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/stderr
+    multiTail $app_log_file $tux_log_file $ren_log_file $watch_log_file $monitor_log_file $analytic_log_file $stderr_log_file
+  fi
 }
 
 #Open the appserver configuration file in the default editor
