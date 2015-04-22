@@ -113,19 +113,14 @@ assignScriptExtension () {
 }
 
 multiTail () {
-  if (hash lnav 2>/dev/null); then
-    lnav "$@"
-  else
-    trap 'kill $(jobs -p)' EXIT
-    for file in "$@"; do
-      if [[ -e $file ]]; then
-        log "INFO - Beginning tail of $file"
-        tail -n 50 -f "$file" | awk '{"date \"+%Y%m%d_%H%M%S\"" | getline now} {close("date")} {print now ": " $0}' &
-      fi
-    done
-    wait
-  fi
-
+  trap 'kill $(jobs -p)' EXIT
+  for file in "$@"; do
+    if [[ -e $file ]]; then
+      log "INFO - Beginning tail of $file"
+      tail -n 50 -f "$file" | awk '{"date \"+%Y%m%d_%H%M%S\"" | getline now} {close("date")} {print now ": " $0}' &
+    fi
+  done
+  wait
 }
 
 bincheck() {
