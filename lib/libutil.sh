@@ -84,7 +84,7 @@ deleteDirContents () {
   for dir in "$@"; do
     if [[ -d ${dir} ]]; then
       log "INFO - Deleting contents of ${dir}"
-      rm -rf "$dir"/*
+      rm -rf "$dir:?"/*
     else
       log "INFO - $dir not found"
     fi
@@ -113,12 +113,26 @@ assignScriptExtension () {
 }
 
 multiTail () {
-  trap 'kill $(jobs -p)' EXIT
-  for file in "$@"; do
-    if [[ -e $file ]]; then
-      log "INFO - Beginning tail of $file"
-      tail -n 50 -f "$file" | awk '{"date \"+%Y%m%d_%H%M%S\"" | getline now} {close("date")} {print now ": " $0}' &
-    fi
-  done
-  wait
+  if (hash lnav 2>/dev/null); then
+    lnav "$@"
+  else
+    trap 'kill $(jobs -p)' EXIT
+    for file in "$@"; do
+      if [[ -e $file ]]; then
+        log "INFO - Beginning tail of $file"
+        tail -n 50 -f "$file" | awk '{"date \"+%Y%m%d_%H%M%S\"" | getline now} {close("date")} {print now ": " $0}' &
+      fi
+    done
+    wait
+  fi
+
 }
+
+bincheck() {
+  for p in ${1}; do
+    hash "$p" 2>&- || \
+    { log "ERROR - Required program \"$p\" not available in PATH"; exit 1; }
+  done
+}
+
+
