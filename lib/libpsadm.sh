@@ -358,7 +358,11 @@ tailAppserver () {
   local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
   local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
   local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
-  multiTail $app_log_file $tux_log_file $ren_log_file
+  local watch_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/WATCHSRV_`date +%m%d`.LOG
+  local monitor_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/MONITORSRV_`date +%m%d`.LOG
+  local analytic_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/ANALYTICSRV_`date +%m%d`.LOG
+  local stderr_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/stderr
+  multiTail $app_log_file $tux_log_file $ren_log_file $watch_log_file $monitor_log_file $analytic_log_file $stderr_log_file
 }
 
 #Open the appserver configuration file in the default editor
@@ -368,7 +372,7 @@ editAppserver () {
   checkVar "EDITOR"
   local app_config_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/psappsrv.cfg
   log "Opening ${app_config_file}"
-  $EDITOR $app_config_file && bouncePrompt && bounceAppserver
+  $EDITOR "$app_config_file" && bouncePrompt && bounceAppserver
 }
 
 ###################
