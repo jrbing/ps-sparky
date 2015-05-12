@@ -214,7 +214,7 @@ bouncePrompt () {
 startAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Starting application domain $PS_APP_DOMAIN"
-  psadminEXE -c parallelboot -d $PS_APP_DOMAIN
+  psadminEXE -c boot -d $PS_APP_DOMAIN
 }
 
 #Reloads the domain configuration for the domain.
