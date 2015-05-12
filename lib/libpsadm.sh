@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Library file for psadm script
 
-PSADMIN_PATH=$PS_HOME/appserv
+PSADMIN_PATH=$PS_HOME/bin
 BASEDIR=$(dirname $0)
 
 ####################
@@ -175,7 +175,7 @@ log () {
 }
 
 psadminEXE () {
-  cd $PS_HOME/appserv
+  cd "$PS_HOME/bin"
   psadmin $@
 }
 
@@ -214,21 +214,21 @@ bouncePrompt () {
 startAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Starting application domain $PS_APP_DOMAIN"
-  psadminEXE -c boot -d $PS_APP_DOMAIN
+  psadminEXE -c boot -d "$PS_APP_DOMAIN"
 }
 
 #Reloads the domain configuration for the domain.
 configAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Reloading configuration for $PS_APP_DOMAIN"
-  psadminEXE -c configure -d $PS_APP_DOMAIN
+  psadminEXE -c configure -d "$PS_APP_DOMAIN"
 }
 
 #Shuts down the application server domain, by using a normal shutdown method
 stopAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Stopping application domain $PS_APP_DOMAIN"
-  psadminEXE -c shutdown -d $PS_APP_DOMAIN
+  psadminEXE -c shutdown -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
@@ -236,7 +236,7 @@ stopAppserver () {
 killAppserver () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Killing application domain $PS_APP_DOMAIN"
-  psadminEXE -c shutdown! -d $PS_APP_DOMAIN
+  psadminEXE -c shutdown! -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
@@ -244,7 +244,7 @@ killAppserver () {
 showAppserverProcesses () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Processes"
-  psadminEXE -c pslist -d $PS_APP_DOMAIN
+  psadminEXE -c pslist -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
@@ -252,7 +252,7 @@ showAppserverProcesses () {
 showAppserverServerStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Status"
-  psadminEXE -c sstatus -d $PS_APP_DOMAIN
+  psadminEXE -c sstatus -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
@@ -260,7 +260,7 @@ showAppserverServerStatus () {
 showAppserverClientStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Client Status"
-  psadminEXE -c cstatus -d $PS_APP_DOMAIN
+  psadminEXE -c cstatus -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
@@ -269,7 +269,7 @@ showAppserverClientStatus () {
 showAppserverQueueStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Queue Status"
-  psadminEXE -c qstatus -d $PS_APP_DOMAIN
+  psadminEXE -c qstatus -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
@@ -277,21 +277,21 @@ showAppserverQueueStatus () {
 preloadAppserverCache () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Preloading appserver cache for domain $PS_APP_DOMAIN"
-  psadminEXE -c preload -d $PS_APP_DOMAIN
+  psadminEXE -c preload -d "$PS_APP_DOMAIN"
 }
 
 #Cleans the IPC resources for the domain.
 flushAppserverIPC () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Flushing appserver IPC resources for domain $PS_APP_DOMAIN"
-  psadminEXE -c cleanipc -d $PS_APP_DOMAIN
+  psadminEXE -c cleanipc -d "$PS_APP_DOMAIN"
 }
 
 #Purges the cache for the domain.
 purgeAppserverCache () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Clearing appserver cache for domain $PS_APP_DOMAIN"
-  psadminEXE -c purge -d $PS_APP_DOMAIN
+  psadminEXE -c purge -d "$PS_APP_DOMAIN"
 }
 
 #Stops, purges, reconfigures, and restarts the application server
