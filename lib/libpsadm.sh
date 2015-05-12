@@ -191,7 +191,7 @@ psadminEXEcute () {
       $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
     ;;
     (*)
-      cd $PS_HOME/appserv
+      cd $PS_HOME/bin
       psadmin -$server_type $command -d $server_domain
     ;;
   esac
@@ -567,7 +567,6 @@ stopEMAgent () {
 
 # Shows the status of the emagent
 showEMAgentStatus () {
-  # TODO
   checkVar "PS_HOME"
   (cd $PS_HOME/PSEMViewer && ./GetEnvInfo.sh)
 }
@@ -577,18 +576,18 @@ purgeEMAgent () {
   checkVar "PS_HOME"
   log "INFO - Purging EMAgent cache"
   assignScriptExtension
-  deleteFile $PS_HOME/PSEMAgent/APPSRV.LOG
-  deleteFile $PS_HOME/PSEMAgent/nodeid
-  deleteFile $PS_HOME/PSEMAgent/nohup.out
-  deleteFile $PS_HOME/PSEMAgent/ULOG.*
-  deleteFile $PS_HOME/PSEMAgent/envmetadata/data/emf_psae*$SCRIPT_EXT
-  deleteFile $PS_HOME/PSEMAgent/envmetadata/data/emf_psreleaseinfo$SCRIPT_EXT
-  deleteFile $PS_HOME/PSEMAgent/envmetadata/data/search-results.xml
-  deleteDir $PS_HOME/PSEMAgent/envmetadata/data/ids
-  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/logs
-  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/PersistentStorage
-  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/scratchpad
-  deleteDirContents $PS_HOME/PSEMAgent/envmetadata/transactions
+  deleteFile "$PS_HOME/PSEMAgent/APPSRV.LOG"
+  deleteFile "$PS_HOME/PSEMAgent/nodeid"
+  deleteFile "$PS_HOME/PSEMAgent/nohup.out"
+  deleteFile "$PS_HOME/PSEMAgent/ULOG.*"
+  deleteFile "$PS_HOME/PSEMAgent/envmetadata/data/emf_psae*$SCRIPT_EXT"
+  deleteFile "$PS_HOME/PSEMAgent/envmetadata/data/emf_psreleaseinfo$SCRIPT_EXT"
+  deleteFile "$PS_HOME/PSEMAgent/envmetadata/data/search-results.xml"
+  deleteDir "$PS_HOME/PSEMAgent/envmetadata/data/ids"
+  deleteDirContents "$PS_HOME/PSEMAgent/envmetadata/logs"
+  deleteDirContents "$PS_HOME/PSEMAgent/envmetadata/PersistentStorage"
+  deleteDirContents "$PS_HOME/PSEMAgent/envmetadata/scratchpad"
+  deleteDirContents "$PS_HOME/PSEMAgent/envmetadata/transactions"
 }
 
 # Restarts the emagent
@@ -602,7 +601,7 @@ bounceEMAgent () {
 tailEMAgent () {
   checkVar "PS_HOME"
   local agent_log=$PS_HOME/PSEMAgent/envmetadata/logs/emf.log
-  multiTail $agent_log
+  multiTail "$agent_log"
 }
 
 #Open the process scheduler configuration file in the default editor
@@ -611,7 +610,7 @@ editEMAgent () {
   checkVar "EDITOR"
   local agent_config_file=$PS_HOME/PSEMAgent/envmetadata/config/configuration.properties
   log "Opening ${agent_config_file}"
-  $EDITOR $agent_config_file && bouncePrompt && bounceEMAgent
+  $EDITOR "$agent_config_file" && bouncePrompt && bounceEMAgent
 }
 
 
@@ -623,14 +622,14 @@ editEMAgent () {
 purgeEMHub () {
   checkVar "PS_HOME"
   log "INFO - Purging EMHub cache"
-  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/state.dat
-  deleteFile $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/transhash.dat
-  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/proxies
-  deleteDir $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/environment
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/logs
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/PersistentStorage
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/scratchpad
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/transactions
+  deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/state.dat"
+  deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/transhash.dat"
+  deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/proxies"
+  deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/environment"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/logs"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/PersistentStorage"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/scratchpad"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/transactions"
 }
 
 # Restarts the emhub and purges the cache
@@ -650,7 +649,7 @@ compileCobol () {
   checkVar "PS_HOME"
   if [[ -f $PS_HOME/setup/pscbl.mak ]]; then
     log "INFO - Recompiling COBOL"
-    cd $PS_HOME/setup && ./pscbl.mak
+    cd "$PS_HOME/setup" && ./pscbl.mak
     printBlankLine
   else
     log "ERROR - Could not find the file $PS_HOME/setup/pscbl.mak"
@@ -663,7 +662,7 @@ linkCobol () {
   checkVar "PS_HOME"
   if [[ -f $PS_HOME/setup/psrun.mak ]]; then
     log "INFO - Linking COBOL"
-    cd $PS_HOME/setup && ./psrun.mak
+    cd "$PS_HOME/setup" && ./psrun.mak
     printBlankLine
   else
     log "ERROR - Could not find the file $PS_HOME/setup/psrun.mak"
