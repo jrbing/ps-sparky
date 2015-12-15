@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
-#Title         :pscfg
-#Description   :Utility script for modifying Sparky configuration files
-#Author        :JR Bing
-#==============================================================================
+#===============================================================================
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+#===============================================================================
+#
+#          FILE: pscfg
+#
+#   DESCRIPTION: Utility script for modifying Sparky configuration files
+#
+#===============================================================================
 
-###############################
 # Source the function libraries
-###############################
-
 BASEDIR=$(dirname $0)
 source $BASEDIR/../lib/libutil.sh
 source $BASEDIR/../lib/libpscfg.sh
 
+# Validate that the ~/.environments directory exists
 checkForEnvironmentDir
 
-#############################
 # Parse the command arguments
-#############################
-
 case $1 in
 
   (help)
@@ -32,7 +32,7 @@ case $1 in
     if [[ $2 ]]; then
       createEnvironment $2
     else
-      log "Additional parameters required"
+      echoError "Additional parameters required"
       printCreateHelp
     fi
   ;;
@@ -41,7 +41,7 @@ case $1 in
     if [[ $2 ]]; then
       editEnvironment $2
     else
-      log "Additional parameters required"
+      echoError "Additional parameters required"
       printEditHelp
     fi
   ;;
@@ -50,7 +50,7 @@ case $1 in
     if [[ $2 ]]; then
       deleteEnvironment $2
     else
-      log "Additional parameters required"
+      echoError "Additional parameters required"
       printDeleteHelp
     fi
   ;;
@@ -59,27 +59,10 @@ case $1 in
     if [[ $2 && $3 ]]; then
       copyEnvironment $2 $3
     else
-      log "Additional parameters required"
+      echoError "Additional parameters required"
       printCopyHelp
     fi
   ;;
-
-  #(show)
-    #showPsftVars
-  #;;
-
-  #(toggle)
-    # Toggle configuration settings
-  #;;
-
-  #(encrypt)
-    # encrypt web, app, prcs passwords
-  #;;
-
-  #(doctor)
-    # Validate current environment settings
-    #runCheckup
-  #;;
 
   (*)
     printHelp

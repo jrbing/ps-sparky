@@ -1,15 +1,23 @@
 #!/usr/bin/env bash
-# Library file for psadm script
+#===============================================================================
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+#===============================================================================
+#
+#          FILE: libpsadm.sh
+#
+#   DESCRIPTION: Library file for psadm script
+#
+#===============================================================================
 
-PSADMIN_PATH=$PS_HOME/bin
-BASEDIR=$(dirname $0)
+# shellcheck disable=SC2034
+PSADMIN_PATH="$PS_HOME/bin"
+# shellcheck disable=SC2086
+BASEDIR="$(dirname $0)"
 
-####################
-# Help Documentation
-####################
+# Help Documentation {{{1
 
-# Prints the help documentation
-printHelp () {
+#TODO: add color support to documentation
+function printHelp () {
 cat <<- EOF
 
   # PSADM #
@@ -37,7 +45,7 @@ EOF
 }
 
 # Prints the help documentation for the "status" command
-printStatusHelp () {
+function printStatusHelp () {
 cat <<- EOF
 
   Usage:
@@ -50,7 +58,7 @@ EOF
 }
 
 # Prints the help documentation for the "start" command
-printStartHelp () {
+function printStartHelp () {
 cat <<- EOF
 
   Usage:
@@ -63,7 +71,7 @@ EOF
 }
 
 # Prints the help documentation for the "stop" command
-printStopHelp () {
+function printStopHelp () {
 cat <<- EOF
 
   Usage:
@@ -76,7 +84,7 @@ EOF
 }
 
 # Prints the help documentation for the "kill" command
-printKillHelp () {
+function printKillHelp () {
 cat <<- EOF
 
   Usage:
@@ -89,7 +97,7 @@ EOF
 }
 
 # Prints the help documentation for the "bounce" command
-printBounceHelp () {
+function printBounceHelp () {
 cat <<- EOF
 
   Usage:
@@ -102,7 +110,7 @@ EOF
 }
 
 # Prints the help documentation for the "purge" command
-printPurgeHelp () {
+function printPurgeHelp () {
 cat <<- EOF
 
   Usage:
@@ -115,7 +123,7 @@ EOF
 }
 
 # Prints the help documentation for the "watch" command
-printWatchHelp () {
+function printWatchHelp () {
 cat <<- EOF
 
   Usage:
@@ -128,7 +136,7 @@ EOF
 }
 
 # Prints the help documentation for the "watch app" command
-printWatchAppHelp () {
+function printWatchAppHelp () {
 cat <<- EOF
 
   Usage:
@@ -141,7 +149,7 @@ EOF
 }
 
 # Prints the help documentation for the "tail" command
-printTailHelp () {
+function printTailHelp () {
 cat <<- EOF
 
   Usage:
@@ -154,7 +162,7 @@ EOF
 }
 
 # Prints the help documentation for the "edit" command
-printEditHelp () {
+function printEditHelp () {
 cat <<- EOF
 
   Usage:
@@ -166,20 +174,19 @@ cat <<- EOF
 EOF
 }
 
-#########
-# Utility
-#########
+# }}}
 
-log () {
-  printf "\e[00;31m[PSADM]: $1\e[00m\n" >&2
+# Utility Functions {{{1
+
+function psadminEXE () {
+  echoDebug "Arguments to psadminEXE are: ${*}"
+  cd "$PS_HOME/bin" || (echoError "Could not change directory to $PS_HOME/bin"; exit 1)
+  psadmin "$@"
 }
 
-psadminEXE () {
-  cd "$PS_HOME/bin"
-  psadmin $@
-}
+function psadminExecute () {
+  echoDebug "Arguments to psadminExecute are: ${*}"
 
-psadminEXEcute () {
   local server_type=$1
   local command=$2
   local server_domain=$3
@@ -191,13 +198,13 @@ psadminEXEcute () {
       $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
     ;;
     (*)
-      cd $PS_HOME/bin
-      psadmin -$server_type $command -d $server_domain
+      cd "$PS_HOME/bin" || (echoError "Could not change directory to $PS_HOME/bin"; exit 1)
+      "$PS_HOME"/bin/psadmin -"$server_type" "$command" -d "$server_domain"
     ;;
   esac
 }
 
-bouncePrompt () {
+function bouncePrompt () {
   read -p "Restart the service (y/n)? " choice
   case "$choice" in
     y|Y ) return 0;;
@@ -206,42 +213,42 @@ bouncePrompt () {
   esac
 }
 
-###########
-# Appserver
-###########
+# }}}
+
+# Appserver {{{1
 
 #Boots an application server domain
-startAppserver () {
+function startAppserver () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Starting application domain $PS_APP_DOMAIN"
+  echoInfo "Starting application domain $PS_APP_DOMAIN"
   psadminEXE -c boot -d "$PS_APP_DOMAIN"
 }
 
 #Reloads the domain configuration for the domain.
-configAppserver () {
+function configAppserver () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Reloading configuration for $PS_APP_DOMAIN"
+  echoInfo "Reloading configuration for $PS_APP_DOMAIN"
   psadminEXE -c configure -d "$PS_APP_DOMAIN"
 }
 
 #Shuts down the application server domain, by using a normal shutdown method
-stopAppserver () {
+function stopAppserver () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Stopping application domain $PS_APP_DOMAIN"
+  echoInfo "Stopping application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
-#Shuts down the application server domain by using a forced shutdown method
-killAppserver () {
+#Shuts down the application server domain by using the forced shutdown method
+function killAppserver () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Killing application domain $PS_APP_DOMAIN"
+  echoInfo "Killing application domain $PS_APP_DOMAIN"
   psadminEXE -c shutdown! -d "$PS_APP_DOMAIN"
   printBlankLine
 }
 
 #Displays the processes that have been booted for the PSDMO domain
-showAppserverProcesses () {
+function showAppserverProcesses () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Processes"
   psadminEXE -c pslist -d "$PS_APP_DOMAIN"
@@ -249,7 +256,7 @@ showAppserverProcesses () {
 }
 
 #Displays the Tuxedo processes and PeopleSoft server processes
-showAppserverServerStatus () {
+function showAppserverServerStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Status"
   psadminEXE -c sstatus -d "$PS_APP_DOMAIN"
@@ -257,7 +264,7 @@ showAppserverServerStatus () {
 }
 
 #Displays the clients connected to the application server domain
-showAppserverClientStatus () {
+function showAppserverClientStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Client Status"
   psadminEXE -c cstatus -d "$PS_APP_DOMAIN"
@@ -266,7 +273,7 @@ showAppserverClientStatus () {
 
 #Displays status information about the individual queues for each
 #server process in the application server domain.
-showAppserverQueueStatus () {
+function showAppserverQueueStatus () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Queue Status"
   psadminEXE -c qstatus -d "$PS_APP_DOMAIN"
@@ -274,28 +281,28 @@ showAppserverQueueStatus () {
 }
 
 #Preloads the server cache for the domain.
-preloadAppserverCache () {
+function preloadAppserverCache () {
   checkVar "PS_APP_DOMAIN"
   log "INFO - Preloading appserver cache for domain $PS_APP_DOMAIN"
   psadminEXE -c preload -d "$PS_APP_DOMAIN"
 }
 
 #Cleans the IPC resources for the domain.
-flushAppserverIPC () {
+function flushAppserverIPC () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Flushing appserver IPC resources for domain $PS_APP_DOMAIN"
+  echoInfo "Flushing appserver IPC resources for domain $PS_APP_DOMAIN"
   psadminEXE -c cleanipc -d "$PS_APP_DOMAIN"
 }
 
 #Purges the cache for the domain.
-purgeAppserverCache () {
+function purgeAppserverCache () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Clearing appserver cache for domain $PS_APP_DOMAIN"
+  echoInfo "Clearing appserver cache for domain $PS_APP_DOMAIN"
   psadminEXE -c purge -d "$PS_APP_DOMAIN"
 }
 
 #Stops, purges, reconfigures, and restarts the application server
-bounceAppserver () {
+function bounceAppserver () {
   stopAppserver
   flushAppserverIPC
   purgeAppserverCache
@@ -304,7 +311,7 @@ bounceAppserver () {
 }
 
 #Loops through the appserver process status until canceled
-watchAppserverProcesses () {
+function watchAppserverProcesses () {
   while true
   do
     clear
@@ -316,7 +323,7 @@ watchAppserverProcesses () {
 }
 
 #Loops through the appserver process status until canceled
-watchAppserverServerStatus () {
+function watchAppserverServerStatus () {
   while true
   do
     clear
@@ -328,7 +335,7 @@ watchAppserverServerStatus () {
 }
 
 #Loops through the appserver client status until canceled
-watchAppserverClientStatus () {
+function watchAppserverClientStatus () {
   while true
   do
     clear
@@ -340,7 +347,7 @@ watchAppserverClientStatus () {
 }
 
 #Loops through the appserver queue status until canceled
-watchAppserverQueueStatus () {
+function watchAppserverQueueStatus () {
   while true
   do
     clear
@@ -352,97 +359,93 @@ watchAppserverQueueStatus () {
 }
 
 #Tails the appserver logs
-tailAppserver () {
+function tailAppserver () {
   checkVar "PS_HOME"
   checkVar "PS_APP_DOMAIN"
-  if (hash lnav 2>/dev/null); then
-    lnav "$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS"
-  else
-    local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
-    local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
-    local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
-    local watch_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/WATCHSRV_`date +%m%d`.LOG
-    local monitor_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/MONITORSRV_`date +%m%d`.LOG
-    local analytic_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/ANALYTICSRV_`date +%m%d`.LOG
-    local stderr_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/stderr
-    multiTail $app_log_file $tux_log_file $ren_log_file $watch_log_file $monitor_log_file $analytic_log_file $stderr_log_file
-  fi
+  local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
+  local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
+  local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
+  local watch_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/WATCHSRV_`date +%m%d`.LOG
+  local monitor_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/MONITORSRV_`date +%m%d`.LOG
+  local analytic_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/ANALYTICSRV_`date +%m%d`.LOG
+  local stderr_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/stderr
+  multiTail $app_log_file $tux_log_file $ren_log_file $watch_log_file $monitor_log_file $analytic_log_file $stderr_log_file
 }
 
 #Open the appserver configuration file in the default editor
-editAppserver () {
+function editAppserver () {
   checkVar "PS_CFG_HOME"
   checkVar "PS_APP_DOMAIN"
   checkVar "EDITOR"
   local app_config_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/psappsrv.cfg
-  log "Opening ${app_config_file}"
+  echoInfo "Opening ${app_config_file}"
   $EDITOR "$app_config_file" && bouncePrompt && bounceAppserver
 }
 
-###################
-# Process Scheduler
-###################
+# }}}
+
+# Process Scheduler {{{1
 
 #Starts a Process Scheduler
-startProcessScheduler () {
+function startProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
-  log "INFO - Starting process scheduler domain $PS_PRCS_DOMAIN"
-  psadminEXEcute p start ${PS_PRCS_DOMAIN}
+  echoInfo "Starting process scheduler domain $PS_PRCS_DOMAIN"
+  psadminExecute p start ${PS_PRCS_DOMAIN}
   printBlankLine
 }
 
 #Stops a Process Scheduler
-stopProcessScheduler () {
+function stopProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
-  log "INFO - Stopping process scheduler domain $PS_PRCS_DOMAIN"
-  psadminEXEcute p stop ${PS_PRCS_DOMAIN}
+  echoInfo "Stopping process scheduler domain $PS_PRCS_DOMAIN"
+  psadminExecute p stop ${PS_PRCS_DOMAIN}
   printBlankLine
 }
 
 #Kills the domain (similar to forced shutdown)
-killProcessScheduler () {
+function killProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
-  log "INFO - Killing process scheduler domain $PS_PRCS_DOMAIN"
-  psadminEXEcute p kill ${PS_PRCS_DOMAIN}
+  echoInfo "Killing process scheduler domain $PS_PRCS_DOMAIN"
+  psadminExecute p kill ${PS_PRCS_DOMAIN}
   printBlankLine
 }
 
 #Configures a Process Scheduler
-configProcessScheduler () {
+function configProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
-  log "INFO - Reloading configuration for $PS_PRCS_DOMAIN"
-  psadminEXEcute p configure ${PS_PRCS_DOMAIN}
+  echoInfo "Reloading configuration for $PS_PRCS_DOMAIN"
+  psadminExecute p configure ${PS_PRCS_DOMAIN}
   printBlankLine
 }
 
 #Displays the status of a Process Scheduler
-showProcessSchedulerStatus () {
+function showProcessSchedulerStatus () {
   checkVar "PS_PRCS_DOMAIN"
   printBanner "Process Scheduler Status"
-  psadminEXEcute p status ${PS_PRCS_DOMAIN}
+  psadminExecute p status ${PS_PRCS_DOMAIN}
   printBlankLine
 }
 
 #Cleans the IPC resources for specified domain
-flushProcessSchedulerIPC () {
+function flushProcessSchedulerIPC () {
   checkVar "PS_PRCS_DOMAIN"
-  log "INFO - Flushing process scheduler IPC resources for domain $PS_PRCS_DOMAIN"
-  psadminEXEcute p cleanipc ${PS_PRCS_DOMAIN}
+  echoInfo "Flushing process scheduler IPC resources for domain $PS_PRCS_DOMAIN"
+  psadminExecute p cleanipc ${PS_PRCS_DOMAIN}
 }
 
 # Purge the process scheduler cache
-purgeProcessSchedulerCache () {
+function purgeProcessSchedulerCache () {
   checkVar "PS_PRCS_DOMAIN"
-  log "INFO - Purging process scheduler logs for domain $PS_PRCS_DOMAIN"
-  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS
+  echoInfo "Purging process scheduler logs for domain $PS_PRCS_DOMAIN"
+  deleteDirContents "$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS"
   deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/log_output
   deleteFile $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/ULOG.*
-  log "INFO - Purging process scheduler cache for domain $PS_PRCS_DOMAIN"
+  echoInfo "Purging process scheduler cache for domain $PS_PRCS_DOMAIN"
   deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/CACHE
 }
 
 #Stops, purges, reconfigures, and restarts the process scheduler server
-bounceProcessScheduler () {
+function bounceProcessScheduler () {
   stopProcessScheduler
   flushProcessSchedulerIPC
   purgeProcessSchedulerCache
@@ -451,7 +454,7 @@ bounceProcessScheduler () {
 }
 
 #Loops through the process scheduler status until canceled
-watchProcessSchedulerStatus () {
+function watchProcessSchedulerStatus () {
   while true
   do
     clear
@@ -463,7 +466,7 @@ watchProcessSchedulerStatus () {
 }
 
 #Tail the process scheduler logs
-tailProcessScheduler () {
+function tailProcessScheduler () {
   checkVar "PS_HOME"
   checkVar "PS_PRCS_DOMAIN"
   local prcs_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/SCHDLR_`date +%m%d`.LOG
@@ -472,53 +475,53 @@ tailProcessScheduler () {
 }
 
 #Open the process scheduler configuration file in the default editor
-editProcessScheduler () {
+function editProcessScheduler () {
   checkVar "PS_CFG_HOME"
   checkVar "PS_PRCS_DOMAIN"
   checkVar "EDITOR"
   local prcs_config_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/psprcs.cfg
-  log "Opening ${prcs_config_file}"
-  $EDITOR $prcs_config_file && bouncePrompt && bounceProcessScheduler
+  echoInfo "Opening ${prcs_config_file}"
+  $EDITOR "$prcs_config_file" && bouncePrompt && bounceProcessScheduler
 }
 
-###########
-# Webserver
-###########
+# }}}
+
+# Webserver {{{1
 
 # Starts the webserver process
-startWebserver () {
+function startWebserver () {
   checkVar "PS_PIA_DOMAIN"
-  psadminEXEcute w start ${PS_PIA_DOMAIN}
+  psadminExecute w start ${PS_PIA_DOMAIN}
 }
 
 # Stop the webserver process
-stopWebserver () {
+function stopWebserver () {
   checkVar "PS_PIA_DOMAIN"
-  psadminEXEcute w shutdown ${PS_PIA_DOMAIN}
+  psadminExecute w shutdown ${PS_PIA_DOMAIN}
 }
 
 # Shows the status of the webserver
-showWebserverStatus () {
+function showWebserverStatus () {
   checkVar "PS_PIA_DOMAIN"
-  psadminEXEcute w status ${PS_PIA_DOMAIN}
+  psadminExecute w status ${PS_PIA_DOMAIN}
 }
 
 # Purge the webserver cache
-purgeWebserverCache () {
+function purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
-  log "INFO - Purging webserver cache for domain $PS_PIA_DOMAIN"
+  echoInfo "Purging webserver cache for domain $PS_PIA_DOMAIN"
   deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL*/*/cache
 }
 
 # Stop, clear the cache, and start the webserver
-bounceWebserver () {
+function bounceWebserver () {
   stopWebserver
   purgeWebserverCache
   startWebserver
 }
 
 #Tail the webserver logs
-tailWebserver () {
+function tailWebserver () {
   checkVar "PS_PIA_DOMAIN"
   local pia_stdout_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stdout.log
   local pia_stderr_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stderr.log
@@ -527,54 +530,54 @@ tailWebserver () {
 }
 
 #Open the webserver configuration file in the default editor
-editWebserver () {
+function editWebserver () {
   checkVar "PS_PIA_HOME"
   checkVar "PS_PIA_DOMAIN"
   checkVar "PS_PIA_SITE"
   checkVar "EDITOR"
   local pia_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/WEB-INF/psftdocs/$PS_PIA_SITE/configuration.properties
-  log "Opening ${pia_config_file}"
+  echoInfo "Opening ${pia_config_file}"
   $EDITOR $pia_config_file && bouncePrompt && bounceWebserver
 }
 
 #Open the integrationGateway.properties configuration file in the default editor
-editIntegrationGateway () {
+function editIntegrationGateway () {
   checkVar "PS_PIA_HOME"
   checkVar "PS_PIA_DOMAIN"
   checkVar "EDITOR"
   local ig_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSIGW.war/WEB-INF/integrationGateway.properties
-  log "Opening ${ig_config_file}"
-  $EDITOR $ig_config_file
+  echoInfo "Opening ${ig_config_file}"
+  $EDITOR "$ig_config_file"
 }
 
-##############################
-# Environment Management Agent
-##############################
+# }}}
+
+# Environment Management Agent {{{1
 
 # Start the emagent process and begin tailing the output
-startEMAgent () {
+function startEMAgent () {
   checkVar "PS_HOME"
   assignScriptExtension
-  $PS_HOME/PSEMAgent/StartAgent$SCRIPT_EXT
+  "$PS_HOME/PSEMAgent/StartAgent$SCRIPT_EXT"
 }
 
 # Start the emagent process
-stopEMAgent () {
+function stopEMAgent () {
   checkVar "PS_HOME"
   assignScriptExtension
-  $PS_HOME/PSEMAgent/StopAgent$SCRIPT_EXT
+  "$PS_HOME/PSEMAgent/StopAgent$SCRIPT_EXT"
 }
 
 # Shows the status of the emagent
-showEMAgentStatus () {
+function showEMAgentStatus () {
   checkVar "PS_HOME"
-  (cd $PS_HOME/PSEMViewer && ./GetEnvInfo.sh)
+  (cd "$PS_HOME/PSEMViewer" && ./GetEnvInfo.sh)
 }
 
 # Purges the emagent cache
-purgeEMAgent () {
+function purgeEMAgent () {
   checkVar "PS_HOME"
-  log "INFO - Purging EMAgent cache"
+  echoInfo "Purging EMAgent cache"
   assignScriptExtension
   deleteFile "$PS_HOME/PSEMAgent/APPSRV.LOG"
   deleteFile "$PS_HOME/PSEMAgent/nodeid"
@@ -591,81 +594,82 @@ purgeEMAgent () {
 }
 
 # Restarts the emagent
-bounceEMAgent () {
+function bounceEMAgent () {
   stopEMAgent
   purgeEMAgent
   startEMAgent
 }
 
 #Tail the environment management agent log
-tailEMAgent () {
+function tailEMAgent () {
   checkVar "PS_HOME"
-  local agent_log=$PS_HOME/PSEMAgent/envmetadata/logs/emf.log
+  local agent_log="$PS_HOME/PSEMAgent/envmetadata/logs/emf.log"
   multiTail "$agent_log"
 }
 
 #Open the process scheduler configuration file in the default editor
-editEMAgent () {
+function editEMAgent () {
   checkVar "PS_HOME"
   checkVar "EDITOR"
   local agent_config_file=$PS_HOME/PSEMAgent/envmetadata/config/configuration.properties
-  log "Opening ${agent_config_file}"
+  echoInfo "Opening ${agent_config_file}"
   $EDITOR "$agent_config_file" && bouncePrompt && bounceEMAgent
 }
 
+# }}}
 
-############################
-# Environment Management Hub
-############################
+# Environment Management Hub {{{1
 
 # Purges the emhub cache
-purgeEMHub () {
+function purgeEMHub () {
   checkVar "PS_HOME"
   log "INFO - Purging EMHub cache"
-  deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/state.dat"
-  deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/transhash.dat"
-  deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/proxies"
-  deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/data/environment"
-  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/logs"
-  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/PersistentStorage"
-  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/scratchpad"
-  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB*/envmetadata/transactions"
+  deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat"
+  deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat"
+  deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies"
+  deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/environment"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/logs"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/PersistentStorage"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/scratchpad"
+  deleteDirContents "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/transactions"
 }
 
 # Restarts the emhub and purges the cache
-bounceEMHub () {
+function bounceEMHub () {
   stopWebserver
   purgeWebserverCache
   purgeEMHub
   startWebserver
 }
 
-#######
-# COBOL
-#######
+# }}}
+
+# COBOL {{{1
 
 # Compile COBOL
-compileCobol () {
+function compileCobol () {
   checkVar "PS_HOME"
   if [[ -f $PS_HOME/setup/pscbl.mak ]]; then
-    log "INFO - Recompiling COBOL"
+    echoInfo "Recompiling COBOL"
     cd "$PS_HOME/setup" && ./pscbl.mak
     printBlankLine
   else
-    log "ERROR - Could not find the file $PS_HOME/setup/pscbl.mak"
+    echoError "Could not find the file $PS_HOME/setup/pscbl.mak"
     exit 1
   fi
 }
 
 # Link COBOL
-linkCobol () {
+function linkCobol () {
   checkVar "PS_HOME"
   if [[ -f $PS_HOME/setup/psrun.mak ]]; then
-    log "INFO - Linking COBOL"
+    echoInfo "Linking COBOL"
     cd "$PS_HOME/setup" && ./psrun.mak
     printBlankLine
   else
-    log "ERROR - Could not find the file $PS_HOME/setup/psrun.mak"
+    echoError "Could not find the file $PS_HOME/setup/psrun.mak"
     exit 1
   fi
 }
+
+# }}}
