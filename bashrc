@@ -8,8 +8,8 @@
 # Initial Setup
 ###############
 #TODO: determine whether or not to use utf-8 characters in the prompt
-#export PS1=$'\e[0;34m[${PS_ENV:-"NOENV"} \xe2\x8c\xb8  \u@\h \W]\$ \e[m'
-export PS1=$'\\[\e[0;34m[${PS_ENV:-"NOENV"} \xe2\x9d\xaf \u@\h \W]\$ \e[m\\]'
+export PS1=$'\e[0;34m[${PS_ENV:-"NOENV"} \xe2\x9d\xaf \u@\h \W]\$ \e[m'
+#export PS1=$'\\[\e[0;34m[${PS_ENV:-"NOENV"} \xe2\x9d\xaf \u@\h \W]\$ \e[m\\]'
 export SPHOME="$HOME/.ps-sparky"
 export PATH=$SPHOME/bin:$PATH
 export PS_ENV_HOME=$HOME/.environments
