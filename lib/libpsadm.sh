@@ -420,9 +420,11 @@ function configProcessScheduler () {
 
 #Displays the status of a Process Scheduler
 function showProcessSchedulerStatus () {
+  #TODO: this gives a return code of 5
   checkVar "PS_PRCS_DOMAIN"
   printBanner "Process Scheduler Status"
-  psadminExecute p status ${PS_PRCS_DOMAIN}
+  psadminExecute p status "${PS_PRCS_DOMAIN}"
+  printBlankLine
   printBlankLine
 }
 
@@ -438,7 +440,7 @@ function purgeProcessSchedulerCache () {
   checkVar "PS_PRCS_DOMAIN"
   echoInfo "Purging process scheduler logs for domain $PS_PRCS_DOMAIN"
   deleteDirContents "$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS"
-  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/log_output
+  deleteDirContents "$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/log_output"
   deleteFile $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/ULOG.*
   echoInfo "Purging process scheduler cache for domain $PS_PRCS_DOMAIN"
   deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/CACHE
