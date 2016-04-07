@@ -9,8 +9,6 @@
 #
 #===============================================================================
 
-#TODO: convert this over to use camel case for functions
-
 # Help Documentation {{{1
 
 function print_help () {
@@ -116,8 +114,10 @@ function source_env_file () {
 }
 
 function source_psconfig () {
-  log "Sourcing the psconfig.sh file"
-  [[ $CYGWIN ]] || cd "$PS_HOME" && source "$PS_HOME"/psconfig.sh && cd - > /dev/null 2>&1 # Source psconfig.sh
+  if [[ -z "$CYGWIN" ]]; then
+    log "Sourcing the psconfig.sh file"
+    cd "$PS_HOME" && source "$PS_HOME"/psconfig.sh && cd - > /dev/null 2>&1
+  fi
 }
 
 function set_library_path () {
