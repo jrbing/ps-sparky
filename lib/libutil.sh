@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===============================================================================
-# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8:
 #===============================================================================
 #
 #          FILE: libutil.sh
