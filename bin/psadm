@@ -282,30 +282,6 @@ case $1 in
     esac
   ;;
 
-  #(show)
-    #case $2 in
-      #(app)
-        # TODO:  insert functionality to show appserver specific settings or
-        # environment variables
-      #;;
-      #(web)
-        # TODO:  insert functionality to show appserver specific settings or
-        # environment variables
-      #;;
-      #(prcs)
-        # TODO:  insert functionality to show appserver specific settings or
-        # environment variables
-      #;;
-      #(agent)
-        # TODO:  insert functionality to show emagent specific settings or
-        # environment variables
-      #;;
-      #(*)
-        #printShowHelp
-      #;;
-    #esac
-  #;;
-
   (*)
     printHelp
   ;;
