@@ -9,8 +9,6 @@
 #
 #===============================================================================
 
-#set -o nounset                              # Treat unset variables as an error
-
 ENV_VARS=( HOME PS_HOME PS_CFG_HOME PS_APP_HOME PS_PIA_HOME )
 COLORS=$(tput colors 2>/dev/null || echo 0)
 
@@ -30,15 +28,6 @@ function __detect_color_support() {
   fi
 }
 __detect_color_support
-
-function __detect_unicode_support() {
-  #☠
-  #✽
-  #⭐
-  return 0
-}
-__detect_unicode_support
-
 
 function echoError() {
   printf "${RC} *  ERROR${EC}: %s\n" "$@" 1>&2;
