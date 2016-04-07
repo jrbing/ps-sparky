@@ -24,10 +24,6 @@ do
       print_help
       break
       ;;
-    -v | --verbose)
-      VERBOSE=$((verbose+1))
-      shift
-      ;;
     -d | --default)
       DEFAULT=$((default+1))
       shift
