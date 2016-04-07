@@ -80,7 +80,7 @@ updateSparky () {
   /usr/bin/env cp -rf /tmp/jrbing-ps-sparky-???????/* "$HOME/.ps-sparky/"
 
   log "Removing temporary files"
-  /usr/bin/env rm -rf /tmp/ps-admin-ps-sparky-???????/
+  /usr/bin/env rm -rf /tmp/jrbing-ps-sparky-???????/
 
   log "Update complete"
 }
