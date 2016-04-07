@@ -16,11 +16,9 @@ BASEDIR="$(dirname $0)"
 
 # Help Documentation {{{1
 
-#TODO: add color support to documentation
 function printHelp () {
+printHelpBanner "PSADM"
 cat <<- EOF
-
-  # PSADM #
 
   Description:
     psadm is a utility script that acts as a wrapper for PeopleSoft

@@ -47,8 +47,13 @@ function echoDebug() {
   fi
 }
 
+# shellcheck disable=SC2059
 function printHL () {
   printf "\n${YC}----------------------------------------${EC}\n"
+}
+
+function printHelpBanner () {
+  printf "\n${YC}  # %s #${EC}\n" "$@";
 }
 
 function printBanner () {
