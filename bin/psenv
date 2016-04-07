@@ -1,33 +1,28 @@
 #!/usr/bin/env bash
-#Title         :psenv
-#Description   :Utility script for setting PeopleSoft-specific environment
-#               variables under Unix/Linux
-#Author        :JR Bing
-#==============================================================================
+#===============================================================================
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+#===============================================================================
+#
+#          FILE: psenv
+#
+#   DESCRIPTION: Utility script for setting PeopleSoft-specific environment
+#                variables under Unix/Linux
+#
+#===============================================================================
 
 PSENV_LIBDIR=$SPHOME/lib
 source $PSENV_LIBDIR/libpsenv.sh
 
-############
 # Validation
-############
-
 check_for_environment_dir
 
-#############################
 # Parse the command arguments
-#############################
-
 while :
 do
   case $1 in
     -h | --help | -\?)
       print_help
       break
-      ;;
-    -v | --verbose)
-      VERBOSE=$((verbose+1))
-      shift
       ;;
     -d | --default)
       DEFAULT=$((default+1))
@@ -67,6 +62,3 @@ do
       ;;
   esac
 done
-
-#TODO:  fix this so that it exits if no argument is specified
-#TODO:  allow a flag to be set that defaults the environment file

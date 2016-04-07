@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
-#Title         :sparky
-#Description   :Script to perform maintenance on your sparky installation
-#Author        :JR Bing
-#==============================================================================
+#===============================================================================
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+#===============================================================================
+#
+#          FILE: sparky
+#
+#   DESCRIPTION: Script for performining maintenance on your sparky installation
+#
+#===============================================================================
 
-###############################
 # Source the function libraries
-###############################
-
 BASEDIR=$(dirname $0)
 source $BASEDIR/../lib/libutil.sh
 source $BASEDIR/../lib/libsparky.sh
 
-#############################
 # Parse the command arguments
-#############################
-
 case $1 in
 
   (help)

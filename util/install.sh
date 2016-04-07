@@ -4,7 +4,6 @@
 ##############################
 # Fix for invalid certificates
 ##############################
-
 # Remove the temporary curl cert bundle if it exists
 if [[ -f /tmp/curl-ca-bundle-new.crt  ]]; then
   rm /tmp/curl-ca-bundle-new.crt
@@ -20,16 +19,16 @@ fi
 
 printf "[INFO] Downloading ps-sparky from github\n"
 cd ~ && \
-mkdir .ps-sparky && \
+mkdir ~/.ps-sparky && \
 /usr/bin/env rm -rf /tmp/ps-sparky* && \
 /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/jrbing/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
 /usr/bin/env gunzip -vf /tmp/ps-sparky.tar.gz && \
 /usr/bin/env tar -xvf /tmp/ps-sparky.tar && \
 /usr/bin/env cp -rf jrbing-ps-sparky-???????/* .ps-sparky/
 
-printf "[INFO] Cleaning up temporary files"
+printf "[INFO] Cleaning up temporary files\n"
 cd ~
 rm -rf jrbing-ps-sparky-???????/
 
-printf "[INFO] Running installation bootstrap script"
+printf "[INFO] Running installation bootstrap script\n"
 ./.ps-sparky/util/bootstrap.sh

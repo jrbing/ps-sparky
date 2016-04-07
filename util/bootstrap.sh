@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
-# Bootstrap script for ps-sparky
+#===============================================================================
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+#===============================================================================
+#
+#          FILE: bootstrap.sh
+#
+#   DESCRIPTION: Bootstrap script for ps-sparky
+#
+#===============================================================================
 
 PS_ENV_HOME=$HOME/.environments
 INSTALL_DIR=$HOME/.ps-sparky
-LINKED_FILES=( "profile" "bash_profile" "bashrc" )
+LINKED_FILES=( "profile" "bash_profile" "bashrc" "vimrc" )
 
 createSymlinks () {
   for i in ${LINKED_FILES[@]}
@@ -46,4 +54,3 @@ createEnvironmentsDirectory () {
 createSymlinks
 copySparkyRC
 createEnvironmentsDirectory
-

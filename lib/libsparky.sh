@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===============================================================================
-# vim: softtabstop=4 shiftwidth=4 expandtab fenc=utf-8 spell spelllang=en
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8:
 #===============================================================================
 #
 #          FILE: libsparky.sh
@@ -44,32 +44,43 @@ EOF
 #########
 
 log () {
-  printf "\n\e[00;31m[SPARKY]: $1\e[00m\n" >&2
+  printf "\e[00;31m[SPARKY]: \e[00m$1\n" >&2
 }
 
 updateSparky () {
+  set -e
   log "Updating Sparky"
 
   # Fix for invalid certificates
   # Remove the temporary curl cert bundle if it exists
   if [[ -f /tmp/curl-ca-bundle-new.crt  ]]; then
-    rm /tmp/curl-ca-bundle-new.crt
+    log "Removing old temporary certificate file"
+    rm -v /tmp/curl-ca-bundle-new.crt
   fi
 
-  # Download the appropriate root certificates from Digicert
+  log "Downloading temporary root certificate from DigiCert"
   /usr/bin/env curl -sSfL https://www.digicert.com/testroot/DigiCertHighAssuranceEVRootCA.crt >> /tmp/curl-ca-bundle-new.crt
   /usr/bin/env curl -sSfL https://www.digicert.com/CACerts/DigiCertHighAssuranceEVCA-1.crt >> /tmp/curl-ca-bundle-new.crt
 
   # Pull down files from github
-  log "Downloading newest version from Github"
-  cd $HOME && \
-  /usr/bin/env rm -rf /tmp/ps-sparky* && \
-  /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/jrbing/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz && \
-  /usr/bin/env gunzip -vf /tmp/ps-sparky.tar.gz && \
-  /usr/bin/env tar -xvf /tmp/ps-sparky.tar && \
-  /usr/bin/env cp -rf jrbing-ps-sparky-???????/* .ps-sparky/
+  #cd "$HOME" && \
+  if [[ -f /tmp/ps-sparky.tar.gz  ]] || [[ -f /tmp/ps-sparky.tar  ]]; then
+    log "Removing temporary file from prior update"
+    /usr/bin/env rm -rfv /tmp/ps-sparky.*
+  fi
 
-  # Remove temporary files
-  log "Cleaning up"
-  /usr/bin/env rm -rf ps-admin-ps-sparky-???????/
+  log "Downloading newest version from GitHub"
+  /usr/bin/env curl --cacert /tmp/curl-ca-bundle-new.crt -SL https://github.com/jrbing/ps-sparky/tarball/master -o /tmp/ps-sparky.tar.gz
+
+  log "Extracting downloaded archive"
+  (cd /tmp && /usr/bin/env gunzip -f /tmp/ps-sparky.tar.gz)
+  (cd /tmp && /usr/bin/env tar -xf /tmp/ps-sparky.tar)
+
+  log "Copying new version to destination"
+  /usr/bin/env cp -rf /tmp/jrbing-ps-sparky-???????/* "$HOME/.ps-sparky/"
+
+  log "Removing temporary files"
+  /usr/bin/env rm -rf /tmp/ps-admin-ps-sparky-???????/
+
+  log "Update complete"
 }

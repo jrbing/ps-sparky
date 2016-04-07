@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
-#Title         :psadm
-#Description   :Utility script for working with PeopleSoft servers under Unix/Linux
-#Author        :JR Bing
-#==============================================================================
+#===============================================================================
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+#===============================================================================
+#
+#          FILE: psadm
+#
+#   DESCRIPTION: Utility script for working with PeopleSoft servers
+#                under Unix/Linux
+#
+#===============================================================================
 
-###############################
+set -e          # Exit immediately on error
+#set -u          # Treat unset variables as an error
+set -o pipefail # Prevent errors in a pipeline from being masked
+IFS=$'\n\t'     # Set the internal field separator to a tab and newline
+
 # Source the function libraries
-###############################
+BASEDIR="$(dirname $0)"
+source "$BASEDIR"/../lib/libutil.sh
+source "$BASEDIR"/../lib/libpsadm.sh
 
-BASEDIR=$(dirname $0)
-source $BASEDIR/../lib/libutil.sh
-source $BASEDIR/../lib/libpsadm.sh
-
-############
 # Validation
-############
-
 checkPsftVars
 
-#############################
 # Parse the command arguments
-#############################
-
 case $1 in
 
   (help)
@@ -276,30 +278,6 @@ case $1 in
       ;;
       (*)
         printEditHelp
-      ;;
-    esac
-  ;;
-
-  (show)
-    case $2 in
-      (app)
-        # TODO:  insert functionality to show appserver specific settings or
-        # environment variables
-      ;;
-      (web)
-        # TODO:  insert functionality to show appserver specific settings or
-        # environment variables
-      ;;
-      (prcs)
-        # TODO:  insert functionality to show appserver specific settings or
-        # environment variables
-      ;;
-      (agent)
-        # TODO:  insert functionality to show emagent specific settings or
-        # environment variables
-      ;;
-      (*)
-        #printShowHelp
       ;;
     esac
   ;;
