@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===============================================================================
-# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8:
 #===============================================================================
 #
 #          FILE: libpsadm.sh
@@ -92,7 +92,7 @@ cat <<- EOF
   pscfg copy "source" "target"
 
   Description:
-  Copies the specified environment file and opens the new file 
+  Copies the specified environment file and opens the new file
   in the default editor
 
 EOF
@@ -141,8 +141,8 @@ checkForEnvironmentDir () {
 # List {{{1
 
 listEnvironments () {
-  #TODO: clean this up so that it displays properly
-  printf "\e[00;31m### Environments ###\e[00m\n" >&2
+  printBanner "Environments"
+  echo
   local counter=1
   for i in "${ENV_FILES[@]}"; do
     printf "$counter) $i\n"
@@ -160,7 +160,6 @@ createEnvironment () {
   if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) != "y" ]]; then
       cp $BASEDIR/../sample.psenv $PS_ENV_HOME/$1.psenv
       $EDITOR $PS_ENV_HOME/$1.psenv
-      #TODO:  prompt to see if the environment file should be sourced
       exit
     else
       log "Environment file for ${1} already exists"
@@ -175,7 +174,6 @@ editEnvironment () {
   log "Editing environment file"
   if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) == "y" ]]; then
       $EDITOR $PS_ENV_HOME/$1.psenv
-      #TODO:  prompt to see if the environment file should be sourced
     else
       log "Environment file for ${1} not found"
   fi
