@@ -62,6 +62,3 @@ do
       ;;
   esac
 done
-
-#TODO:  fix this so that it exits if no argument is specified
-#TODO:  allow a flag to be set that defaults the environment file
