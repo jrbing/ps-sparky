@@ -11,7 +11,7 @@
 
 PS_ENV_HOME=$HOME/.environments
 INSTALL_DIR=$HOME/.ps-sparky
-LINKED_FILES=( "profile" "bash_profile" "bashrc" )
+LINKED_FILES=( "profile" "bash_profile" "bashrc" "vimrc" )
 
 createSymlinks () {
   for i in ${LINKED_FILES[@]}
