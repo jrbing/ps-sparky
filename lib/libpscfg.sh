@@ -209,7 +209,6 @@ copyEnvironment () {
   if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) == "y" ]]; then
       cp $PS_ENV_HOME/$1.psenv $PS_ENV_HOME/$2.psenv
       $EDITOR $PS_ENV_HOME/$2.psenv
-      #TODO:  prompt to see if the environment file should be sourced
       exit
     else
       log "Environment file for ${1} not found"
@@ -217,24 +216,3 @@ copyEnvironment () {
 }
 
 # }}}
-
-
-# Displays PeopleSoft-specific environment variables
-#showPsftVars () {
-  ##TODO:  fix this abomination
-  #for i in $ENV_VARS; do
-    #printf $i is set to `printenv $i`
-  #done
-#}
-
-#validatePSHOME () {
-  #log "Validating PS_HOME"
-  #if [[ $PS_HOME ]] && [[ -d $PS_HOME ]]; then
-    # Check to see if:
-    #  - peopletools.properties is setup
-    #echo "Validate PSHOME setup"
-  #else
-    # something
-    #echo "No PSHOME setup"
-  #fi
-#}
