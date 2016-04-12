@@ -13,7 +13,13 @@ PS_ENV_HOME=$HOME/.environments
 INSTALL_DIR=$HOME/.ps-sparky
 LINKED_FILES=( "profile" "bash_profile" "bashrc" "vimrc" )
 
-createSymlinks () {
+function echoinfo() {
+  local GC="\033[1;32m"
+  local EC="\033[0m"
+  printf "${GC} ☆  INFO${EC}: %s\n" "$@";
+}
+
+function createSymlinks () {
   for i in ${LINKED_FILES[@]}
   do
     if [[ -f ~/.${i} ]] || [[ -h ~/.${i} ]]; then
@@ -27,7 +33,7 @@ createSymlinks () {
   done
 }
 
-copySparkyRC () {
+function copySparkyRC () {
   if [[ -f $HOME/.sparkyrc ]] || [[ -h $HOME/.sparkyrc ]]; then
     printf "[INFO] Found directory ~/.sparkyrc \n"
     printf "[INFO] Backing up to ~/.sparkyrc.old \n"
@@ -36,13 +42,13 @@ copySparkyRC () {
   fi
 
   printf "[INFO] Copying sparkyrc \n"
-  cp ${INSTALL_DIR}/sparkyrc $HOME/.sparkyrc
+  cp ${INSTALL_DIR}/examples/sparkyrc $HOME/.sparkyrc
 }
 
-createEnvironmentsDirectory () {
+function createEnvironmentsDirectory () {
   if [[ -d $HOME/.environments ]] || [[ -h $HOME/.environments ]]; then
-    printf "[INFO] Found ~/.environments folder \n"
-    printf "[INFO] Backing up to ~/.environments-old \n"
+    echoInfo "Found ~/.environments folder \n"
+    echoInfo "Backing up to ~/.environments-old \n"
     cp $HOME/.environments $HOME/.environments-old
     rm -rf $HOME/.environments;
   fi

@@ -27,7 +27,7 @@ mkdir ~/.ps-sparky && \
 /usr/bin/env cp -rf jrbing-ps-sparky-???????/* .ps-sparky/
 
 printf "[INFO] Cleaning up temporary files\n"
-cd ~
+cd ~ || exit 1
 rm -rf jrbing-ps-sparky-???????/
 
 printf "[INFO] Running installation bootstrap script\n"

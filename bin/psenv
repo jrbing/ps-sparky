@@ -11,7 +11,8 @@
 #===============================================================================
 
 PSENV_LIBDIR=$SPHOME/lib
-source $PSENV_LIBDIR/libpsenv.sh
+# shellcheck disable=1090
+source "$PSENV_LIBDIR"/libpsenv.sh
 
 # Validation
 check_for_environment_dir
@@ -25,6 +26,7 @@ do
       break
       ;;
     -d | --default)
+      # shellcheck disable=2034,2154
       DEFAULT=$((default+1))
       shift
       ;;
@@ -33,7 +35,7 @@ do
       break
       ;;
     -*)
-      printf "[PSENV]: Unknown option (ignored): $1 \n" >&2
+      echoWarn "Unknown option (ignored): $1 \n" >&2
       shift
       ;;
     *)
@@ -45,17 +47,17 @@ do
           exit 0
         elif [[ "$BASH_SOURCE" != "$0" ]]; then
           if [ $(contains_environment "${ENV_FILES[@]}" $1) == "y" ]; then
-              log "Environment file for $1 found"
-              create_default_symlink $1                # Create a symlink to default the specified environment
+              echoDebug "Environment file for $1 found"
+              create_default_symlink "$1"              # Create a symlink to default the specified environment
               environment_reset                        # Reset the impacted environment variables
               restore_library_path                     # Change the library path to it's previous setting
               restore_path                             # Change the path to it's previous setting
-              source_env_file $1                       # Source the environment file
+              source_env_file "$1"                     # Source the environment file
               source_psconfig                          # Run the psconfig.sh script
               set_library_path                         # Set the LD_LIBRARY_PATH
               set_path                                 # Set the PATH
             else
-              printf "[PSENV]: Environment file for $1 not found\n" >&2
+              echoError "Environment file for $1 not found"
           fi
       fi
       break
