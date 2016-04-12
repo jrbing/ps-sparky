@@ -2,12 +2,13 @@
 # vim: softtabstop=4 shiftwidth=4 noexpandtab fenc=utf-8 spelllang=en nolist
 #===============================================================================
 
-config_files = bash_profile bashrc profile vimrc
+SPARKY_HOME=~/.ps-sparky
+ETC_FILES := $(shell cd $(SPARKY_HOME)/etc; ls)
 
 all: link
 
 link:
-	@cd ~ && for file in $(config_files); do ln -nfs .ps-sparky/$$file .$$file; done
+	@cd ~ && for file in $(ETC_FILES); do ln -nfs .ps-sparky/etc/$$file .$$file; done
 
 check-dead:
 	@find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -print
@@ -15,7 +16,4 @@ check-dead:
 clean-dead:
 	@find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -delete
 
-update:
-	git pull --rebase
-
-.PHONY: link check-dead clean-dead update
+.PHONY: link check-dead clean-dead
