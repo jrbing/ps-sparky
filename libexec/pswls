@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -e
+
+resolve_link() {
+  $(type -p greadlink readlink | head -1) "$1"
+}
+
+abs_dirname() {
+  local cwd="$(pwd)"
+  local path="$1"
+
+  while [ -n "$path" ]; do
+    cd "${path%/*}"
+    local name="${path##*/}"
+    path="$(resolve_link "$name" || true)"
+  done
+
+  pwd
+  cd "$cwd"
+}
+
+_pswls_source() {
+  local out=`grep $'#[ \t]*SOURCE' $1`
+  if [ "$out" == "" ]; then
+    echo "0"
+    return
+  fi
+  echo "1"
+}
+
+
+export _original_path=$PATH
+source_command=0
+libexec_path="$(abs_dirname "$0")"
+export PATH="$libexec_path:$PATH"
+
+#export _PSWLS_ROOT="$(abs_dirname "$libexec_path")"
+
+
+command="$1"
+case "$command" in
+"" | "-h" | "--help" )
+  pswls-help
+  ;;
+* )
+  command_path="$(command -v "pswls-$command" || true)"
+  if [ ! -x "$command_path" ]; then
+    echo "pswls: no such command '$command'"
+  else
+      source_command=$(_pswls_source $command_path)
+      shift
+      if [[ "$1" == '--complete' ]]; then
+          $command_path "$@"
+      elif [[ "$source_command" -eq 0 ]]; then
+          $command_path "$@"
+      else 
+          . $command_path "$@"
+      fi
+  fi
+  ;;
+esac
+export PATH=$original_path
