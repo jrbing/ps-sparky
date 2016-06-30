@@ -1,14 +1,12 @@
 _pswls() {
-  COMPREPLY=()
   local word="${COMP_WORDS[COMP_CWORD]}"
 
   if [ "$COMP_CWORD" -eq 1 ]; then
     COMPREPLY=( $(compgen -W "$(pswls commands)" -- "$word") )
   else
-    local command="${COMP_WORDS[1]}"
-    local completions="$(pswls completions "$command")"
+    local completions="$(pswls completions "${COMP_WORDS[@]:1}")"
     COMPREPLY=( $(compgen -W "$completions" -- "$word") )
   fi
 }
 
-complete -F _pswls pswls
+complete -o default -F _pswls pswls
