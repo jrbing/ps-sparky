@@ -1,2 +1,0 @@
-# Summary: Collection of BASH Sub Example Scripts
-# Help: These commands are mostly used as examples and for testing sub modifications

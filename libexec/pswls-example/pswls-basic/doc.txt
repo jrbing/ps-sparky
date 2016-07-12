@@ -1,2 +1,0 @@
-# Summary: List all basic sub Example Scripts
-# Help: This command lists all of the basic sub Example Scripts
