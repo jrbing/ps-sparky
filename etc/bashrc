@@ -25,7 +25,7 @@ export PS_ENV_HOME=$HOME/.environments
 #######
 
 # Export the PMID in order to resolve an issue that Tuxedo has with long hostnames
-PMID=$(hostname)
+PMID=$(hostname -s)
 export PMID
 
 #########
