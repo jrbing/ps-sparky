@@ -17,7 +17,7 @@ source "$SPLIBDIR"/libutil.sh
 # Help Documentation {{{1
 
 # Prints the help documentation
-printHelp () {
+function printHelp () {
 printHelpBanner "PSCFG"
 cat <<- EOF
 
@@ -37,7 +37,7 @@ EOF
 
 # TODO: implement the show command
 # Prints the help documentation for the "show" command
-printShowHelp () {
+function printShowHelp () {
 cat <<- EOF
 
   Usage:
@@ -50,7 +50,7 @@ EOF
 }
 
 # Prints the help documentation for the "create" command
-printCreateHelp () {
+function printCreateHelp () {
 cat <<- EOF
 
   Usage:
@@ -64,7 +64,7 @@ EOF
 }
 
 # Prints the help documentation for the "edit" command
-printEditHelp () {
+function printEditHelp () {
 cat <<- EOF
 
   Usage:
@@ -77,7 +77,7 @@ EOF
 }
 
 # Prints the help documentation for the "delete" command
-printDeleteHelp () {
+function printDeleteHelp () {
 cat <<- EOF
 
   Usage:
@@ -90,7 +90,7 @@ EOF
 }
 
 # Prints the help documentation for the "copy" command
-printCopyHelp () {
+function printCopyHelp () {
 cat <<- EOF
 
   Usage:
@@ -107,7 +107,7 @@ EOF
 
 # Utility {{{1
 
-containsEnvironment () {
+function containsEnvironment () {
   local n=$#
   local value=${!n}
   for ((i=1; i < $#; i++)) {
@@ -120,18 +120,21 @@ containsEnvironment () {
   return 1
 }
 
-loadEnvironmentList () {
+function loadEnvironmentList () {
   echoDebug "Loading list of environments"
-  ENV_FILES=( $(ls "$PS_ENV_HOME" | sed -e 's/\.[a-zA-Z]*$//') )
+  ENV_FILES=( $(find "$PS_ENV_HOME" -type f -name "*.psenv" -print0 | xargs -0 -n1 basename | sed -e 's/\.[a-zA-Z]*$//') )
   echoDebug "Environments found: ${ENV_FILES[*]}"
 }
 
-checkForEnvironmentDir () {
+function checkForEnvironmentDir () {
+  echoDebug "Checking for environments directory"
   if [[ -d $PS_ENV_HOME ]]; then
+    echoDebug "Environment directory found"
     loadEnvironmentList
   else
-    mkdir "$PS_ENV_HOME" && cp "$SPHOME"/examples/sample.psenv "$PS_ENV_HOME"/
-    echoInfo "The $PS_ENV_HOME directory has been created and a sample file has been copied.  Please use the sample file provided to configure you environment settings"
+    echoDebug "Environment directory missing"
+    mkdir "$PS_ENV_HOME"
+    echoInfo "The $PS_ENV_HOME directory has been created"
     exit 1
   fi
 }
@@ -141,13 +144,20 @@ checkForEnvironmentDir () {
 
 # List {{{1
 
-listEnvironments () {
+function listEnvironments () {
+  # TODO: show an error message if no environments are found
   printBanner "Environments"
   echo
   local counter=1
-  for i in "${ENV_FILES[@]}"; do
-    printf "$counter) $i\n"
-    counter=$(expr $counter + 1)
+  local envpath
+  for environment in "${ENV_FILES[@]}"; do
+    envpath="${PS_ENV_HOME}/${environment}.psenv"
+    if [[ "$(readlink ${PS_ENV_HOME}/default.psenv)" = "$envpath" ]]; then
+      printf "  %s) %s (default)\n" "$counter" "$environment"
+    else
+      printf "  %s) %s\n" "$counter" "$environment"
+    fi
+    counter=$((counter + 1))
   done
   printf "\n"
 }
@@ -156,14 +166,16 @@ listEnvironments () {
 
 # Create {{{1
 
-createEnvironment () {
+function createEnvironment () {
   echoInfo "Creating environment file"
-  if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) != "y" ]]; then
-      cp $BASEDIR/../sample.psenv $PS_ENV_HOME/$1.psenv
-      $EDITOR $PS_ENV_HOME/$1.psenv
+  echoDebug "Arguments to createEnvironment are: ${*}"
+  local envname=$1
+  if [[ $(containsEnvironment "${ENV_FILES[@]}" "$envname") != "y" ]]; then
+      cp "$BASEDIR"/../examples/sample.psenv "$PS_ENV_HOME"/"$envname".psenv
+      "$EDITOR" "$PS_ENV_HOME"/"$envname".psenv
       exit
     else
-      echoError "Environment file for ${1} already exists"
+      echoError "Environment file for ${envname} already exists"
   fi
 }
 
@@ -171,30 +183,34 @@ createEnvironment () {
 
 # Edit {{{1
 
-editEnvironment () {
+function editEnvironment () {
   echoInfo "Editing environment file"
-  if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) == "y" ]]; then
-      $EDITOR $PS_ENV_HOME/$1.psenv
+  echoDebug "Arguments to editEnvironment are: ${*}"
+  local envname=$1
+  if [[ $(containsEnvironment "${ENV_FILES[@]}" "$envname") == "y" ]]; then
+      "$EDITOR" "$PS_ENV_HOME/$envname.psenv"
     else
-      echoError "Environment file for ${1} not found"
+      echoError "Environment file for ${envname} not found"
   fi
 }
 # }}}
 
 # Delete {{{1
 
-deleteEnvironment () {
+function deleteEnvironment () {
   echoInfo "Deleting environment file"
-  if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) == "y" ]]; then
-      read -p "Are you sure you want to delete the environment file: ${1}? " -n 1
+  echoDebug "Arguments to deleteEnvironment are: ${*}"
+  local envname=$1
+  if [[ $(containsEnvironment "${ENV_FILES[@]}" "$envname") == "y" ]]; then
+      read -p "Are you sure you want to delete the environment file: ${envname}? " -n 1
       if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         printf "\n"
         exit 1
       fi
       printf "\n"
-      rm -v $PS_ENV_HOME/$1.psenv
+      rm -v "$PS_ENV_HOME/${envname}.psenv"
     else
-      echoError "Environment file for ${1} not found"
+      echoError "Environment file for ${envname} not found"
   fi
 }
 
@@ -202,12 +218,15 @@ deleteEnvironment () {
 
 # Copy {{{1
 
-copyEnvironment () {
+function copyEnvironment () {
   #TODO:  test to make sure $1 and $2 are specified
   echoInfo "Copying environment file"
-  if [[ $(containsEnvironment "${ENV_FILES[@]}" $1) == "y" ]]; then
-      cp $PS_ENV_HOME/$1.psenv $PS_ENV_HOME/$2.psenv
-      $EDITOR $PS_ENV_HOME/$2.psenv
+  echoDebug "Arguments to copyEnvironment are: ${*}"
+  local sourceenv=$1
+  local targetenv=$2
+  if [[ $(containsEnvironment "${ENV_FILES[@]}" "$1") == "y" ]]; then
+      cp "$PS_ENV_HOME/$1.psenv" "$PS_ENV_HOME/$2.psenv"
+      "$EDITOR" "$PS_ENV_HOME/$2.psenv"
       exit
     else
       echoError "Environment file for ${1} not found"
