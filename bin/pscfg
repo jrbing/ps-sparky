@@ -13,8 +13,6 @@ set -e
 
 # Source the function libraries
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-#BASEDIR=$(dirname $0)
-#source $BASEDIR/../lib/libutil.sh
 # shellcheck disable=1090
 source "$BASEDIR"/../lib/libpscfg.sh
 
