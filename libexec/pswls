@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-Sub: a script organization tool.
-"""
 # Imports {{{
 import sys
 import os
