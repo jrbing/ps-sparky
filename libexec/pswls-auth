@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Usage: pswls auth
+# Summary: Generate the authentication files for use with pswls
+# Help: TODO!!!
+
+set -e          # Exit immediately on error
+#set -u          # Treat unset variables as an error
+set -o pipefail # Prevent errors in a pipeline from being masked
+IFS=$'\n\t'     # Set the internal field separator to a tab and newline
+
+# Source the function libraries
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=1090
+source "$BASEDIR"/../lib/libpswls.sh
+
+# Validate the necessary environment variables
+validatePSWLSProperties
+setConfigProperties
+setBaseProperties
+setWLSTProperties
+sourceWLSEnv
+setJVMArgs
+
+# TODO: this creates a duplicate prompt for the credentials
+createWLConfigDirectory
+validateWLConfigPermissions
+checkWLConfigFiles
+executeWLSTScript "store_credentials.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"
+#executeWLSTScriptConsole "console.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"
