@@ -28,6 +28,10 @@ case $1 in
     printHelp
   ;;
 
+  (summary)
+    showEnvironmentSummary
+  ;;
+
   (status)
     case $2 in
       (app)
