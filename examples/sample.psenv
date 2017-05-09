@@ -49,8 +49,8 @@ export PS_PIA_SITE="hrdmo"
 # - if you have Weblogic installed and
 # - would like to use the pswls utility
 #export WL_BASE="/path/to/weblogic/installation"
-#export WL_HOST="/path/to/weblogic/installation"
-#export WL_PORT="/path/to/weblogic/installation"
+#export WL_HOST="localhost"
+#export WL_PORT="8080"
 
 # ---------- Oracle Database ----------
 # - Uncomment and modify the following
