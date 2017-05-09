@@ -6,3 +6,5 @@
 if [[ -f "${HOME}/.bashrc" ]]; then
   source "${HOME}/.bashrc"
 fi
+
+#eval "$($HOME/.ps-sparky/bin/pswls init -)"

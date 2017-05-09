@@ -9,10 +9,10 @@
 #
 #===============================================================================
 
-# shellcheck disable=SC2034
-PSADMIN_PATH="$PS_HOME/bin"
-# shellcheck disable=SC2086
-BASEDIR="$(dirname $0)"
+#PSADMIN_PATH="$PS_HOME/bin"
+SPLIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck source=/dev/null
+source "$SPLIBDIR"/libutil.sh
 
 # Help Documentation {{{1
 
@@ -28,6 +28,7 @@ cat <<- EOF
     start       Start a server process
     stop        Stop a server process
     status      Show the status of a server process
+    summary     Show the environment summary
     bounce      Restart a server process
     kill        Force shutdown of a server process
     purge       Delete cached files for a server process
@@ -193,7 +194,7 @@ function psadminExecute () {
   #       executed under CYGWIN
   case $(uname -s) in
     (CYGWIN*)
-      $BASEDIR/../lib/nt/psadmin.cmd $PS_HOME $PS_CFG_HOME $PS_APP_HOME $server_type $command $server_domain
+      "$SPLIBDIR"/../lib/nt/psadmin.cmd "$PS_HOME" "$PS_CFG_HOME" "$PS_APP_HOME" "$server_type" "$command" "$server_domain"
     ;;
     (*)
       cd "$PS_HOME/bin" || (echoError "Could not change directory to $PS_HOME/bin"; exit 1)
@@ -203,6 +204,7 @@ function psadminExecute () {
 }
 
 function bouncePrompt () {
+  # shellcheck disable=2162
   read -p "Restart the service (y/n)? " choice
   case "$choice" in
     y|Y ) return 0;;
@@ -245,7 +247,14 @@ function killAppserver () {
   printBlankLine
 }
 
-#Displays the processes that have been booted for the PSDMO domain
+#Displays the "hidden" environment summary menu
+function showEnvironmentSummary () {
+  psadminEXE -envsummary
+  printBlankLine
+}
+
+
+#Displays the processes that have been booted for the domain
 function showAppserverProcesses () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Processes"
@@ -281,7 +290,7 @@ function showAppserverQueueStatus () {
 #Preloads the server cache for the domain.
 function preloadAppserverCache () {
   checkVar "PS_APP_DOMAIN"
-  log "INFO - Preloading appserver cache for domain $PS_APP_DOMAIN"
+  echoInfo "Preloading appserver cache for domain $PS_APP_DOMAIN"
   psadminEXE -c preload -d "$PS_APP_DOMAIN"
 }
 
@@ -360,14 +369,30 @@ function watchAppserverQueueStatus () {
 function tailAppserver () {
   checkVar "PS_HOME"
   checkVar "PS_APP_DOMAIN"
-  local app_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/APPSRV_`date +%m%d`.LOG
-  local tux_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
-  local ren_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/PSRENSRV_`date +%m%d`.LOG
-  local watch_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/WATCHSRV_`date +%m%d`.LOG
-  local monitor_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/MONITORSRV_`date +%m%d`.LOG
-  local analytic_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/ANALYTICSRV_`date +%m%d`.LOG
-  local stderr_log_file=$PS_CFG_HOME/appserv/$PS_APP_DOMAIN/LOGS/stderr
-  multiTail $app_log_file $tux_log_file $ren_log_file $watch_log_file $monitor_log_file $analytic_log_file $stderr_log_file
+
+  local date_md
+  date_md=$(date +%m%d)
+  local date_mdy
+  date_mdy=$(date +%m%d%y)
+
+  local logpath="$PS_CFG_HOME"/appserv/"$PS_APP_DOMAIN"/LOGS
+  local app_log_file="$logpath"/APPSRV_"$date_md".LOG
+  local tux_log_file="$logpath"/TUXLOG."$date_mdy"
+  local ren_log_file="$logpath"/PSRENSRV_"$date_md".LOG
+  local watch_log_file="$logpath"/WATCHSRV_"$date_md".LOG
+  local monitor_log_file="$logpath"/MONITORSRV_"$date_md".LOG
+  local analytic_log_file="$logpath"/ANALYTICSRVSRV_"$date_md".LOG
+  local stderr_log_file="$logpath"/stderr
+  local stdout_log_file="$logpath"/stdout
+
+  multiTail "$app_log_file" \
+    "$tux_log_file" \
+    "$ren_log_file" \
+    "$watch_log_file" \
+    "$monitor_log_file" \
+    "$analytic_log_file" \
+    "$stderr_log_file" \
+    "$stdout_log_file"
 }
 
 #Open the appserver configuration file in the default editor
@@ -388,7 +413,7 @@ function editAppserver () {
 function startProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   echoInfo "Starting process scheduler domain $PS_PRCS_DOMAIN"
-  psadminExecute p start ${PS_PRCS_DOMAIN}
+  psadminExecute p start "${PS_PRCS_DOMAIN}"
   printBlankLine
 }
 
@@ -396,7 +421,7 @@ function startProcessScheduler () {
 function stopProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   echoInfo "Stopping process scheduler domain $PS_PRCS_DOMAIN"
-  psadminExecute p stop ${PS_PRCS_DOMAIN}
+  psadminExecute p stop "${PS_PRCS_DOMAIN}"
   printBlankLine
 }
 
@@ -404,7 +429,7 @@ function stopProcessScheduler () {
 function killProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   echoInfo "Killing process scheduler domain $PS_PRCS_DOMAIN"
-  psadminExecute p kill ${PS_PRCS_DOMAIN}
+  psadminExecute p kill "${PS_PRCS_DOMAIN}"
   printBlankLine
 }
 
@@ -412,7 +437,7 @@ function killProcessScheduler () {
 function configProcessScheduler () {
   checkVar "PS_PRCS_DOMAIN"
   echoInfo "Reloading configuration for $PS_PRCS_DOMAIN"
-  psadminExecute p configure ${PS_PRCS_DOMAIN}
+  psadminExecute p configure "${PS_PRCS_DOMAIN}"
   printBlankLine
 }
 
@@ -430,18 +455,20 @@ function showProcessSchedulerStatus () {
 function flushProcessSchedulerIPC () {
   checkVar "PS_PRCS_DOMAIN"
   echoInfo "Flushing process scheduler IPC resources for domain $PS_PRCS_DOMAIN"
-  psadminExecute p cleanipc ${PS_PRCS_DOMAIN}
+  psadminExecute p cleanipc "${PS_PRCS_DOMAIN}"
 }
 
 # Purge the process scheduler cache
 function purgeProcessSchedulerCache () {
   checkVar "PS_PRCS_DOMAIN"
+
   echoInfo "Purging process scheduler logs for domain $PS_PRCS_DOMAIN"
   deleteDirContents "$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS"
   deleteDirContents "$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/log_output"
-  deleteFile $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/ULOG.*
+  deleteFile "$PS_CFG_HOME"/appserv/prcs/"$PS_PRCS_DOMAIN"/ULOG.*
+
   echoInfo "Purging process scheduler cache for domain $PS_PRCS_DOMAIN"
-  deleteDirContents $PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/CACHE
+  deleteDirContents "$PS_CFG_HOME"/appserv/prcs/"$PS_PRCS_DOMAIN"/CACHE
 }
 
 #Stops, purges, reconfigures, and restarts the process scheduler server
@@ -469,9 +496,26 @@ function watchProcessSchedulerStatus () {
 function tailProcessScheduler () {
   checkVar "PS_HOME"
   checkVar "PS_PRCS_DOMAIN"
-  local prcs_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/SCHDLR_`date +%m%d`.LOG
-  local tux_log_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/LOGS/TUXLOG.`date +%m%d%y`
-  multiTail $prcs_log_file $tux_log_file
+
+  local date_md
+  date_md=$(date +%m%d)
+  local date_mdy
+  date_mdy=$(date +%m%d%y)
+
+  local logpath="$PS_CFG_HOME"/appserv/prcs/"$PS_PRCS_DOMAIN"/LOGS
+  local prcs_log_file="$logpath"/SCHDLR_"$date_md".LOG
+  local tux_log_file="$logpath"/TUXLOG."$date_mdy"
+  local dstagnt_log_file="$logpath"/DSTAGNT_"$date_md".LOG
+  local aesrv_log_file="$logpath"/AESRV_"$date_md".LOG
+  local stdout_log_file="$logpath"/stderr
+  local stderr_log_file="$logpath"/stdout
+
+  multiTail "$prcs_log_file" \
+    "$tux_log_file" \
+    "$dstagnt_log_file" \
+    "$aesrv_log_file" \
+    "$stdout_log_file" \
+    "$stderr_log_file"
 }
 
 #Open the process scheduler configuration file in the default editor
@@ -479,7 +523,7 @@ function editProcessScheduler () {
   checkVar "PS_CFG_HOME"
   checkVar "PS_PRCS_DOMAIN"
   checkVar "EDITOR"
-  local prcs_config_file=$PS_CFG_HOME/appserv/prcs/$PS_PRCS_DOMAIN/psprcs.cfg
+  local prcs_config_file="$PS_CFG_HOME"/appserv/prcs/"$PS_PRCS_DOMAIN"/psprcs.cfg
   echoInfo "Opening ${prcs_config_file}"
   $EDITOR "$prcs_config_file" && bouncePrompt && bounceProcessScheduler
 }
@@ -491,26 +535,37 @@ function editProcessScheduler () {
 # Starts the webserver process
 function startWebserver () {
   checkVar "PS_PIA_DOMAIN"
-  psadminExecute w start ${PS_PIA_DOMAIN}
+  psadminExecute w start "${PS_PIA_DOMAIN}"
 }
 
 # Stop the webserver process
 function stopWebserver () {
   checkVar "PS_PIA_DOMAIN"
-  psadminExecute w shutdown ${PS_PIA_DOMAIN}
+  psadminExecute w shutdown "${PS_PIA_DOMAIN}"
 }
 
 # Shows the status of the webserver
 function showWebserverStatus () {
   checkVar "PS_PIA_DOMAIN"
-  psadminExecute w status ${PS_PIA_DOMAIN}
+  psadminExecute w status "${PS_PIA_DOMAIN}"
 }
 
 # Purge the webserver cache
 function purgeWebserverCache () {
   checkVar "PS_PIA_DOMAIN"
+  checkVar "PS_PIA_HOME"
   echoInfo "Purging webserver cache for domain $PS_PIA_DOMAIN"
-  deleteDirContents $PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL*/*/cache
+
+  #local portal_cache_path="$PS_PIA_HOME"/webserv/"$PS_PIA_DOMAIN"/applications/peoplesoft/PORTAL.war/WEB-INF/classes/psft/pt8/cache
+  #local ig_cache_path="$PS_PIA_HOME"/webserv/"$PS_PIA_DOMAIN"/applications/peoplesoft/PSIGW.war/WEB-INF/classes/psft/pt8/cache
+  #local emhub_cache_path="$PS_PIA_HOME"/webserv/"$PS_PIA_DOMAIN"/applications/peoplesoft/PSEMHUB.war/WEB-INF/classes/psft/pt8/cache
+  #local pia_cache_path="$PS_PIA_HOME"/webserv/"$PS_PIA_DOMAIN"/servers/PIA/cache
+
+  #deleteDirContents "$portal_cache_path"
+  #deleteDirContents "$ig_cache_path"
+  #deleteDirContents "$emhub_cache_path"
+  #deleteDirContents "$pia_cache_path"
+
 }
 
 # Stop, clear the cache, and start the webserver
@@ -522,11 +577,15 @@ function bounceWebserver () {
 
 #Tail the webserver logs
 function tailWebserver () {
+  checkVar "PS_PIA_HOME"
   checkVar "PS_PIA_DOMAIN"
-  local pia_stdout_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stdout.log
-  local pia_stderr_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_stderr.log
-  local pia_weblogic_log=$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/servers/PIA/logs/PIA_weblogic.log
-  multiTail $pia_stdout_log $pia_stderr_log $pia_weblogic_log
+
+  local logpath="$PS_PIA_HOME"/webserv/"$PS_PIA_DOMAIN"/servers/PIA/logs
+  local pia_stdout_log="$logpath"/PIA_stdout.log
+  local pia_stderr_log="$logpath"/PIA_stderr.log
+  local pia_weblogic_log="$logpath"/PIA_weblogic.log
+
+  multiTail "$pia_stdout_log" "$pia_stderr_log" "$pia_weblogic_log"
 }
 
 #Open the webserver configuration file in the default editor
@@ -537,7 +596,7 @@ function editWebserver () {
   checkVar "EDITOR"
   local pia_config_file=$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PORTAL.war/WEB-INF/psftdocs/$PS_PIA_SITE/configuration.properties
   echoInfo "Opening ${pia_config_file}"
-  $EDITOR $pia_config_file && bouncePrompt && bounceWebserver
+  $EDITOR "$pia_config_file" && bouncePrompt && bounceWebserver
 }
 
 #Open the integrationGateway.properties configuration file in the default editor
@@ -602,8 +661,16 @@ function bounceEMAgent () {
 
 #Tail the environment management agent log
 function tailEMAgent () {
+
+  #local date_md
+  #date_md=$(date +%m%d)
+  #local date_mdy
+  #date_mdy=$(date +%m%d%y)
+
+  #local logpath="$PS_CFG_HOME"/appserv/"$PS_APP_DOMAIN"/LOGS
+
   checkVar "PS_HOME"
-  local agent_log="$PS_HOME/PSEMAgent/envmetadata/logs/emf.log"
+  local agent_log="$PS_HOME"/PSEMAgent/envmetadata/logs/emf.log
   multiTail "$agent_log"
 }
 
@@ -623,7 +690,7 @@ function editEMAgent () {
 # Purges the emhub cache
 function purgeEMHub () {
   checkVar "PS_HOME"
-  log "INFO - Purging EMHub cache"
+  echoInfo "Purging EMHub cache"
   deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/state.dat"
   deleteFile "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/transhash.dat"
   deleteDir "$PS_CFG_HOME/webserv/$PS_PIA_DOMAIN/applications/peoplesoft/PSEMHUB.war/envmetadata/data/proxies"

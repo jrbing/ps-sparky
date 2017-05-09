@@ -9,46 +9,54 @@
 #
 #===============================================================================
 
+set -e          # Exit immediately on error
+set -u          # Treat unset variables as an error
+set -o pipefail # Prevent errors in a pipeline from being masked
+IFS=$'\n\t'     # Set the internal field separator to a tab and newline
+
 PS_ENV_HOME=$HOME/.environments
 INSTALL_DIR=$HOME/.ps-sparky
 LINKED_FILES=( "profile" "bash_profile" "bashrc" "vimrc" )
 
-createSymlinks () {
-  for i in ${LINKED_FILES[@]}
-  do
-    if [[ -f ~/.${i} ]] || [[ -h ~/.${i} ]]; then
-      printf "[INFO] Found ~/.${i}... Backing up to ~/.${i}.old \n";
-      cp $HOME/.${i} $HOME/.${i}.old;
-      rm $HOME/.${i};
-    fi
+function echoInfo() {
+  local GC="\033[1;32m"
+  local EC="\033[0m"
+  printf "${GC} ☆  INFO${EC}: %s\n" "$@"
+}
 
-    printf "Creating alias for ${i} \n"
-    ln -s ${INSTALL_DIR}/${i} $HOME/.${i}
+function createSymlinks () {
+  local dateTime=$(date "+%Y%m%d_%H%M%S")
+  for file in "${LINKED_FILES[@]}"; do
+    if [[ -f ~/.${file} ]] || [[ -h ~/.${file} ]]; then
+      echoInfo "Found ~/.${file}"
+      echoInfo "Backing up to ~/.${file}.${dateTime}"
+      cp "$HOME/.${file}" "$HOME/.${file}.${dateTime}"
+      rm "$HOME/.${file}"
+    fi
+    echoInfo "Creating symlink for ${file}"
+    ln -s "${INSTALL_DIR}/etc/${file}" "$HOME/.${file}"
   done
 }
 
-copySparkyRC () {
+function copySparkyRC () {
   if [[ -f $HOME/.sparkyrc ]] || [[ -h $HOME/.sparkyrc ]]; then
-    printf "[INFO] Found directory ~/.sparkyrc \n"
-    printf "[INFO] Backing up to ~/.sparkyrc.old \n"
-    cp $HOME/.sparkyrc $HOME/.sparkyrc.old
-    rm $HOME/.sparkyrc
+    echoInfo "Found preexisting ~/.sparkyrc"
+    echoInfo "Skipping creation of sparkyrc"
+  else
+    echoinfo "Copying sparkyrc"
+    cp "${INSTALL_DIR}/examples/sparkyrc" "$HOME/.sparkyrc"
   fi
-
-  printf "[INFO] Copying sparkyrc \n"
-  cp ${INSTALL_DIR}/sparkyrc $HOME/.sparkyrc
 }
 
-createEnvironmentsDirectory () {
+function createEnvironmentsDirectory () {
   if [[ -d $HOME/.environments ]] || [[ -h $HOME/.environments ]]; then
-    printf "[INFO] Found ~/.environments folder \n"
-    printf "[INFO] Backing up to ~/.environments-old \n"
-    cp $HOME/.environments $HOME/.environments-old
-    rm -rf $HOME/.environments;
+    echoInfo "Found preexisting ~/.environments directory"
+    echoInfo "Skipping creation of environments directory"
+  else
+    echoInfo "Creating environments directory"
+    mkdir "$PS_ENV_HOME"
   fi
 
-  printf "[INFO] Creating environments folder \n"
-  mkdir $PS_ENV_HOME
 }
 
 createSymlinks

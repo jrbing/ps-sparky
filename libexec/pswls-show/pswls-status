@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Usage: pswls show status
+# Summary: Show status of the weblogic domain
+# Help: TODO!!!
+
+set -e          # Exit immediately on error
+#set -u          # Treat unset variables as an error
+set -o pipefail # Prevent errors in a pipeline from being masked
+IFS=$'\n\t'     # Set the internal field separator to a tab and newline
+
+# Source the function libraries
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=1090
+source "$BASEDIR"/../../lib/libpswls.sh
+
+# Setup the environment for running wlst
+validatePSWLSProperties
+setConfigProperties
+setBaseProperties
+setWLSTProperties
+sourceWLSEnv
+setJVMArgs
+checkWLConfigFilesExist
+
+executeWLSTScript "show_status.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"

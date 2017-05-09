@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===============================================================================
-# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8:
 #===============================================================================
 #
 #          FILE: libutil.sh
@@ -69,12 +69,13 @@ function printBlankLine () {
 function checkPsftVars () {
   for var in "${ENV_VARS[@]}"; do
     echoDebug "Checking ${var}"
-    if [[ "$(printenv ${var})" = '' ]]; then
+    if [[ "$(printenv "${var}")" = '' ]]; then
       echoError "${var} is not set.  Please make sure this is set before continuing."
       exit 1
     fi
   done
 
+  echoDebug "Checking TUXDIR"
   if [[ ! -n "$TUXDIR" ]] && [[ ! -n "$CYGWIN" ]]; then
     echoError "TUXDIR is not set.  Please make sure this is set before continuing."
     exit 1
@@ -83,8 +84,8 @@ function checkPsftVars () {
 
 function checkVar () {
   echoDebug "Checking ${*}"
-  if [[ $(printenv ${1}) = '' ]]; then
-    log "ERROR - ${1} is not set.  You'll need to set this in your environment file."
+  if [[ $(printenv "${1}") = '' ]]; then
+    echoError "${1} is not set.  You'll need to set this in your environment file."
     exit 1
   fi
 }
@@ -142,6 +143,7 @@ function assignScriptExtension () {
     ;;
     (*)
       echoDebug "Could not determine OS...defaulting script extension to .sh"
+      # shellcheck disable=2034
       SCRIPT_EXT=".sh"
     ;;
   esac
@@ -170,9 +172,10 @@ function binCheck() {
 function fileExists {
   echoDebug "Arguments to fileExists: ${*}"
   if [[ -f "$1" ]]; then
-      return 0
+    return 0
+  else
+    return 1
   fi
-  return 1
 }
 
 function tolower {
@@ -193,12 +196,14 @@ function trim {
 function optionEnabled () {
   echoDebug "Arguments to optionEnabled: ${*}"
   local var="$1"
-  local var_value=$(eval echo \$$var)
+  local var_value
+  # shellcheck disable=2086
+  var_value=$(eval echo \$$var)
   if [[ "$var_value" == "y" ]] || [[ "$var_value" == "yes" ]]
   then
-      return 0
+    return 0
   else
-      return 1
+    return 1
   fi
 }
 

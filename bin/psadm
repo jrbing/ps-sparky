@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #===============================================================================
-# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8
+# vim: softtabstop=2 shiftwidth=2 expandtab fenc=utf-8:
 #===============================================================================
 #
 #          FILE: psadm
@@ -10,14 +10,12 @@
 #
 #===============================================================================
 
-set -e          # Exit immediately on error
-#set -u          # Treat unset variables as an error
 set -o pipefail # Prevent errors in a pipeline from being masked
 IFS=$'\n\t'     # Set the internal field separator to a tab and newline
 
 # Source the function libraries
-BASEDIR="$(dirname $0)"
-source "$BASEDIR"/../lib/libutil.sh
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# shellcheck disable=1090
 source "$BASEDIR"/../lib/libpsadm.sh
 
 # Validation
@@ -28,6 +26,10 @@ case $1 in
 
   (help)
     printHelp
+  ;;
+
+  (summary)
+    showEnvironmentSummary
   ;;
 
   (status)
