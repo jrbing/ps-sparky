@@ -35,6 +35,11 @@ alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executa
 alias psenv='source psenv'
 alias pscipher='$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/piabin/PSCipher.sh'
 
+########################
+# Tab completion support
+########################
+source "${SPHOME}/completions/pswls.bash"
+
 ##################
 # Source .sparkyrc
 ##################
