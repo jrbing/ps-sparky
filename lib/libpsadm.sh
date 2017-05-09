@@ -28,6 +28,7 @@ cat <<- EOF
     start       Start a server process
     stop        Stop a server process
     status      Show the status of a server process
+    summary     Show the environment summary
     bounce      Restart a server process
     kill        Force shutdown of a server process
     purge       Delete cached files for a server process
@@ -246,7 +247,14 @@ function killAppserver () {
   printBlankLine
 }
 
-#Displays the processes that have been booted for the PSDMO domain
+#Displays the "hidden" environment summary menu
+function showEnvironmentSummary () {
+  psadminEXE -envsummary
+  printBlankLine
+}
+
+
+#Displays the processes that have been booted for the domain
 function showAppserverProcesses () {
   checkVar "PS_APP_DOMAIN"
   printBanner "Application Server Processes"

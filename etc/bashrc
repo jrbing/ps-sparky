@@ -25,7 +25,7 @@ export PS_ENV_HOME=$HOME/.environments
 #######
 
 # Export the PMID in order to resolve an issue that Tuxedo has with long hostnames
-PMID=$(hostname)
+PMID=$(hostname -s)
 export PMID
 
 #########
@@ -34,6 +34,11 @@ export PMID
 alias psa='(cd $PS_HOME/appserv && ./psadmin)'   # Alias for the psadmin executable
 alias psenv='source psenv'
 alias pscipher='$PS_PIA_HOME/webserv/$PS_PIA_DOMAIN/piabin/PSCipher.sh'
+
+########################
+# Tab completion support
+########################
+source "${SPHOME}/completions/pswls.bash"
 
 ##################
 # Source .sparkyrc

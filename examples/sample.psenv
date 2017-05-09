@@ -18,7 +18,8 @@ export TUXDIR="/path/to/tuxedo/installation"
 
 # ----- Environment Setup -----
 # - These are used by the Sparky utility scripts
-# - and are required in by psadm, psenv, and pscfg
+# - and are required in order to use
+# - psadm, psenv, and pscfg
 export PS_APP_DOMAIN="hrdmo"
 export PS_PRCS_DOMAIN="hrdmo"
 export PS_PIA_DOMAIN="peoplesoft"
@@ -43,6 +44,14 @@ export PS_PIA_SITE="hrdmo"
 #export PS_FILEDIR="/path/to/PS_FILEDIR"
 #export PS_SERVDIR="/path/to/PS_SERVDIR"
 
+# ---------- Weblogic ----------
+# - Uncomment and modify the following
+# - if you have Weblogic installed and
+# - would like to use the pswls utility
+#export WL_BASE="/path/to/weblogic/installation"
+#export WL_HOST="localhost"
+#export WL_PORT="8080"
+
 # ---------- Oracle Database ----------
 # - Uncomment and modify the following
 # - for use with Oracle
@@ -51,8 +60,8 @@ export PS_PIA_SITE="hrdmo"
 #export TNS_ADMIN="/path/to/TNS_ADMIN"
 
 # ----- Oracle Enterprise Manager -----
-# - Uncomment and modify the following
-# - for use with Oracle Enterprise Manager
+# - Uncomment and modify the following to
+# - add the OEM agent binaries to the PATH
 #export AGENT_HOME="/path/to/AGENT_HOME"
 
 ##########################################
