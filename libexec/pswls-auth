@@ -21,9 +21,7 @@ setWLSTProperties
 sourceWLSEnv
 setJVMArgs
 
-# TODO: this creates a duplicate prompt for the credentials
 createWLConfigDirectory
 validateWLConfigPermissions
-checkWLConfigFiles
+checkDuplicateWLConfigFiles
 executeWLSTScript "store_credentials.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"
-#executeWLSTScriptConsole "console.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"
