@@ -38,7 +38,7 @@ function setConfigProperties() {
 function setBaseProperties() {
   echoDebug "Setting base properties"
   export WL_HOME="${WL_BASE}/wlserver"
-  export COMMON_COMPONENTS_HOME="${WL_BASE}/oracle_common"
+  export COMMON_COMPONENTS_HOME="${SPLIBDIR}/pswls/lib"
   export UTILS_MEM_ARGS="-Xms32m -Xmx1024m -XX:MaxPermSize=256m"
   echoDebug "WL_HOME is set to ${WL_HOME}"
   echoDebug "COMMON_COMPONENTS_HOME is set to ${COMMON_COMPONENTS_HOME}"
@@ -88,8 +88,21 @@ function validateWLConfigPermissions() {
   fi
 }
 
+# Check to see if the authentication files exist
+function checkWLConfigFilesExist() {
+  if [[ ! -f $WLCONFIGFILE ]]; then
+    echoError "Configuration file ${WLCONFIGFILE} does not exist"
+    echoError "Please create one with 'pswls auth'"
+    exit 1
+  elif [[ ! -f $WLKEYFILE ]]; then
+    echoError "Key file ${WLKEYFILE} does not exist"
+    echoError "Please create one with 'pswls auth'"
+    exit 1
+  fi
+}
+
 # Make sure we're not overwriting already existing configuration files
-function checkWLConfigFiles() {
+function checkDuplicateWLConfigFiles() {
   if [[ -f $WLCONFIGFILE ]]; then
     echoError "Configuration file ${WLCONFIGFILE} already exists"
     exit 1
@@ -100,7 +113,7 @@ function checkWLConfigFiles() {
 }
 
 function executeWLSTScript() {
-  local script_file="${SPLIBDIR}/pswls/$1"
+  local script_file="${SPLIBDIR}/wlst/$1"
   local config_file="$2"
   local key_file="$3"
   local connect_string="$4"
@@ -108,7 +121,7 @@ function executeWLSTScript() {
 }
 
 function executeWLSTScriptConsole() {
-  local script_file="${SPLIBDIR}/pswls/$1"
+  local script_file="${SPLIBDIR}/wlst/$1"
   local config_file="$2"
   local key_file="$3"
   local connect_string="$4"
