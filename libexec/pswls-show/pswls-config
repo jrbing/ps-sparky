@@ -20,5 +20,6 @@ setBaseProperties
 setWLSTProperties
 sourceWLSEnv
 setJVMArgs
+checkWLConfigFilesExist
 
-executeWLSTScript "show_status.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"
+executeWLSTScript "show_config.py" "$WLCONFIGFILE" "$WLKEYFILE" "$WLCONNECTSTRING"
