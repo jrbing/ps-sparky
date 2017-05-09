@@ -1,2 +1,2 @@
-# Summary: TODO: create summary
-# Help: TODO: create help
+# Summary: Display information about the weblogic domain
+# Help: Displays information about the current weblogic domain including configuration, status, and sessions
