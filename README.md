@@ -1,34 +1,8 @@
 ps-sparky
 =========
 
-Sparky is a collection of tools to help manage a PeopleSoft Web, App, or Process Scheduler server running on Unix or Linux. In a nutshell, it serves two main functions:
+Sparky is curated set of [dotfiles][dotfiles] for working with PeopleSoft services running under Unix/Linux.  It consists of user configuration files and a collection of tools to help manage a PeopleSoft Web, App, or Process Scheduler server.
 
-* Environment Management
-* Administration Scripts
+_In Process_
 
-_In process..._
-
-License
--------
-(The MIT License)
-
-Copyright (c) 2016 JR Bing
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+[dotfiles]:http://dotfiles.github.io "http://dotfiles.github.io"
