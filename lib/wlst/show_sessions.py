@@ -6,7 +6,7 @@ import sys
 import imp
 import os
 scriptpath = os.path.dirname(sys.argv[0])
-pswls = imp.load_source('pswls', scriptpath + '/pswls.py')
+pswls = imp.load_source('pswls', scriptpath + '/lib/pswls.py')
 
 
 def main():
@@ -19,9 +19,23 @@ def main():
             userKeyFile=key_file,
             url=connection_url)
 
+    # pswls.connect_admin(config_file, key_file, connection_url)
+
     # Change to the correct Mbean
     serverRuntime()
     cd('ApplicationRuntimes/peoplesoft/ComponentRuntimes/PIA_')
+
+    # Get current sessions
+    sessions = cmo.getServletSessions()
+    if not sessions:
+        pswls.print_info('No sessions currently connected')
+    else:
+        pswls.print_hl()
+        for session in sessions:
+            name = session.getName()
+            monitoring_id = cmo.getMonitoringId(name)
+            print ' ', monitoring_id
+        pswls.print_hl()
 
     exit()
     stopRedirect()

@@ -6,7 +6,7 @@ import sys
 import imp
 import os
 scriptpath = os.path.dirname(sys.argv[0])
-pswls = imp.load_source('pswls', scriptpath + '/pswls.py')
+pswls = imp.load_source('pswls', scriptpath + '/lib/pswls.py')
 
 
 def main():
@@ -15,14 +15,8 @@ def main():
     key_file = sys.argv[2]
     connection_url = sys.argv[3]
 
-    # Prompt for the username and password
-    username = pswls.get_username()
-    password = pswls.get_password()
-
     connect(userConfigFile=config_file,
             userKeyFile=key_file,
             url=connection_url)
-
-    storeUserConfig(config_file, key_file)
 
 main()
