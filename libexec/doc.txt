@@ -1,1 +1,1 @@
-# Help: A collection of commands
+# Help: Tools for monitoring a Weblogic PIA using wlst
