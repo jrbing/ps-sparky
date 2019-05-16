@@ -7,10 +7,10 @@ import os
 import glob
 import logging
 import subprocess
-import cStringIO
+import io
 import re
 from textwrap import dedent as dd
-from subprocess import PIPE,Popen
+from subprocess import PIPE, Popen
 
 # }}}
 # Globals {{{
@@ -19,7 +19,7 @@ SUB_ROOT = None
 LIBEXEC_PATH = None
 internal_commands = {}
 DOC_FILE = 'doc.txt'
-DIR_PREFIX = u'↬ '
+DIR_PREFIX = '↬ '
 
 # }}}
 # Configure logging {{{
@@ -161,7 +161,7 @@ def path_prepend(directory):
     """
     Add a given directory to the beginning of the PATH environment variable.
     """
-    os.environ['PATH'] = u"%s:%s" % (directory, os.environ['PATH'])
+    os.environ['PATH'] = "%s:%s" % (directory, os.environ['PATH'])
 
 
 @traced
@@ -169,7 +169,7 @@ def mkcmd(command, sh_flag=False):
     """
     Return a string with the name of a command in this pswls.
     """
-    return u"%s%s-%s" % (SUBNAME, ('-sh' if sh_flag else ''), command)
+    return "%s%s-%s" % (SUBNAME, ('-sh' if sh_flag else ''), command)
 
 
 @traced
@@ -304,11 +304,11 @@ def print_container_help(container, command=None):
             helptext = get_usage_and_help(fin)[1]
 
     command = '' if not command else (" ".join(command) + " ")
-    print "Usage: %s %s<command> [<args>]" % (SUBNAME, command)
-    print
+    print("Usage: %s %s<command> [<args>]" % (SUBNAME, command))
+    print("\n", end=' ')
     if helptext is not None:
-        print helptext.rstrip()
-        print
+        print(helptext.rstrip())
+        print("\n", end=' ')
     summaries = get_container_summaries(container)
     if summaries is not None:
         msg = dd("""\
@@ -318,7 +318,7 @@ def print_container_help(container, command=None):
             See '%(subname)s help %(command)s<command>' for information on a specific command.""" % (
             dict(subname=SUBNAME, command=command)))
 
-        print msg % dict(summaries=summaries)
+        print(msg % dict(summaries=summaries))
 
 
 @traced
@@ -333,11 +333,11 @@ def get_container_summaries(container):
             continue
         if os.path.isdir(command_path):
             command_path = os.path.join(command_path, DOC_FILE)
-            command = u"%s %s" % (DIR_PREFIX, command)
+            command = "%s %s" % (DIR_PREFIX, command)
             DEBUG("command %s is a directory, adding docfile: %s",
                   command, command_path)
         else:
-            command = (u" " * (len(DIR_PREFIX) + 1)) + command
+            command = (" " * (len(DIR_PREFIX) + 1)) + command
         if os.path.exists(command_path):
             DEBUG("Found docfile: %s, will get summary", command_path)
             summary = get_summary(command_path)
@@ -366,7 +366,7 @@ def get_summary(afile):
     lines_checked = 0
     re_summary = re.compile(r'^\s*#\s*Summary:\s*(.*)$')
     matcher = Matcher()
-    with file(afile) as fin:
+    with open(afile) as fin:
         for line in fin:
             lines_checked += 1
             if lines_checked > max_lines_to_check:
@@ -445,19 +445,20 @@ def print_usage_help(usage, helptext, file_path, command=None):
         if command and "%COMMAND%" in usage:
             DEBUG("Injecting command name into usage string")
             usage = usage.replace("%COMMAND%", " ".join(command))
-        print usage
+        print(usage)
         if helptext is not None:
             if command and "%COMMAND%" in helptext:
                 DEBUG("Injecting command name into helptext string")
                 helptext = helptext.replace("%COMMAND%", " ".join(command))
 
             DEBUG("Help comment found for %s: %s", file_path, helptext)
-            print
-            print "".join(helptext)
+            print("\n", end='')
+            print("".join(helptext))
+            print("\n", end='')
     else:
         DEBUG("Usage comment NOT found for %s", file_path)
         DEBUG("Not showing helptext: %s", helptext)
-        print "This command isn't documented yet."
+        print("This command isn't documented yet.")
 
 
 @traced
@@ -465,7 +466,7 @@ def print_file_help(file_path, command=None):
     """
     Print help for a file, based on special comments in the file
     """
-    with file(file_path) as fin:
+    with open(file_path) as fin:
         usage, helptext = get_usage_and_help(fin)
     print_usage_help(usage, helptext, file_path, command)
 
@@ -480,7 +481,7 @@ def print_internal_help(command_name):
     docs = dd(command_func.__doc__)
     DEBUG("Printing help for internal command %s based on docstring: %s",
           command_name, docs)
-    fin = cStringIO.StringIO(docs)
+    fin = io.StringIO(docs)
     usage, helptext = get_usage_and_help(fin)
     print_usage_help(usage, helptext, command_name, [command_name])
 
@@ -544,7 +545,7 @@ def print_container_commands(container_path, sh_flag=None, only_containers=False
     Printing helper. Print all commands in a container
     """
     for command in get_container_commands(container_path, sh_flag, only_containers):
-        print command
+        print(command)
 
 
 @traced
@@ -555,7 +556,7 @@ def get_container_commands(container_path, sh_flag=None, only_containers=False):
     glob_pattern = os.path.join(container_path, mkcmd('*'))
     commands = []
     if not sh_flag and container_path == LIBEXEC_PATH and not only_containers:
-        commands = internal_commands.keys()
+        commands = list(internal_commands.keys())
     for command in glob.iglob(glob_pattern):
         if only_containers and not os.path.isdir(command):
             continue
@@ -620,7 +621,7 @@ def provides_completions(command_path):
     """
     compl_line = "# provide %s completions" % SUBNAME
 
-    with file(command_path, 'r') as fin:
+    with open(command_path, 'r') as fin:
         for line in fin:
             if line.lower().startswith(compl_line):
                 return True
@@ -725,10 +726,10 @@ def sub_init(args=None):
     # alternatively, if init is being called to get its out output evalled:
 
     # Add to PATH
-    print 'export PATH="%s:%s/bin"' % (os.environ['PATH'], SUB_ROOT)
+    print('export PATH="%s:%s/bin"' % (os.environ['PATH'], SUB_ROOT))
 
     if shell in profiles:
-        print dd("""\
+        print(dd("""\
         source "%(sub_root)s/completions/%(pswls)s.%(shell)s"
         _sub_%(pswls)s_wrapper() {
             if [[ -z $1 ]]; then
@@ -740,11 +741,11 @@ def sub_init(args=None):
             fi
             return $?
         }
-        """ % fmt_args)
+        """ % fmt_args))
         if shell == 'bash':
-            print "alias %(pswls)s=_sub_%(pswls)s_wrapper" % fmt_args
+            print("alias %(pswls)s=_sub_%(pswls)s_wrapper" % fmt_args)
         elif shell == 'zsh':
-            print "%(pswls)s=_sub_%(pswls)s_wrapper" % fmt_args
+            print("%(pswls)s=_sub_%(pswls)s_wrapper" % fmt_args)
 
 
 # }}}
